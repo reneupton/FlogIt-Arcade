@@ -7,7 +7,8 @@ const nextConfig = {
         domains: [
             'cdn.pixabay.com',
             'people.com',
-            'res.cloudinary.com'
+            'res.cloudinary.com',
+            'images.unsplash.com'
         ]
     }, output: 'standalone'
 }

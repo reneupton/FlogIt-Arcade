@@ -14,9 +14,10 @@ public static class DbInitialiser
             MongoClientSettings.FromConnectionString(app.Configuration.GetConnectionString("MongoDbConnection")));
 
         await DB.Index<Item>()
-            .Key(x => x.Make, KeyType.Text)
-            .Key(x => x.Model, KeyType.Text)
-            .Key(x => x.Colour, KeyType.Text)
+            .Key(x => x.Title, KeyType.Text)
+            .Key(x => x.Brand, KeyType.Text)
+            .Key(x => x.Category, KeyType.Text)
+            .Key(x => x.Colorway, KeyType.Text)
             .CreateAsync();
 
         var count = await DB.CountAsync<Item>();

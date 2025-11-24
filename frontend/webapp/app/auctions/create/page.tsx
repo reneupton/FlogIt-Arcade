@@ -4,9 +4,11 @@ import AuctionForm from '../AuctionForm'
 
 export default function Create() {
   return (
-    <div className='mx-auto max-w-[75%] shadow-lg p-10 bg-white rounded-lg'>
-        <Heading title='Sell your car !' subtitle='Please enter the details of your car' />
-        <AuctionForm />
-    </div>
+    <div className='max-w-5xl mx-auto'>
+        <div className='glass-panel ios-shadow rounded-3xl p-10 border border-white/70'>
+          <Heading title='List your tech drop' subtitle='Showcase your gear, earn FLOG coins, and let the arena bid it up.' />
+          <AuctionForm />
+        </div>
+      </div>
   )
 }

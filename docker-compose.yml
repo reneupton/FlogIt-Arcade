@@ -9,10 +9,11 @@ services:
     image: postgres
     environment:
       - POSTGRES_PASSWORD=110101
+      - PGDATA=/var/lib/postgresql/data/pgdata
     ports:
       - 5432:5432
     volumes:
-      - /var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     networks:
       custom:
   mongodb:
@@ -23,7 +24,7 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - /var/lib/mongodb/data
+      - mongodata:/data/db
     networks:
       custom:
   rabbitmq:
@@ -43,7 +44,7 @@ services:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_URLS=http://+:7777
       - RabbitMq__Host=rabbitmq
-      - ConnectionStrings__DefaultConnection=Host=host.docker.internal;Port=5432;User Id=postgres;Password=110101;Database=auctions
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;User Id=postgres;Password=110101;Database=auctions
       - IdentityServiceUrl=http://identity-svc
       - Kestrel__Endpoints__Grpc__Protocols=Http2
       - Kestrel__Endpoints__Grpc__Url=http://+:7777
@@ -83,9 +84,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=Host=host.docker.internal;Port=5432;User Id=postgres;Password=110101;Database=identitydb
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;User Id=postgres;Password=110101;Database=identitydb
       - VIRTUAL_HOST=id.flogit.com
-      - ClientApp=https://app.flogit.com
+      - ClientApp=http://localhost:3000
+      - ClientSecret=secret
     depends_on:
       - postgres
     networks:
@@ -151,6 +153,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
       - RabbitMq__Host=rabbitmq
+      - ClientApp=http://localhost:3000
     ports:
       - 7004:80
     depends_on:
@@ -166,6 +169,8 @@ services:
       - /var/lib/web/data
     extra_hosts:
       - id.flogit.com:10.5.0.200
+    ports:
+      - 3000:3000
     environment:
       - NEXTAUTH_SECRET=somethingreallysecret
       - NEXTAUTH_URL=https://app.flogit.com
@@ -191,4 +196,8 @@ services:
       - webapp
       - gateway-svc
       - identity-svc
+
+volumes:
+  pgdata:
+  mongodata:
     

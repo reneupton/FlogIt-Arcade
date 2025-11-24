@@ -6,7 +6,7 @@ type Props = {
   label: string;
   type?: string;
   showLabel?: string;
-} & UseControllerProps &
+} & UseControllerProps<any> &
   Partial<ReactDatePickerProps>;
 
 export default function DateInput(props: Props) {
@@ -14,6 +14,7 @@ export default function DateInput(props: Props) {
 
   return (
     <div className="block">
+      <div className="mb-2 text-sm font-medium text-slate-700">{props.label}</div>
       <DatePicker
         {...props}
         {...field}
@@ -21,14 +22,16 @@ export default function DateInput(props: Props) {
         selected={field.value}
         placeholderText={props.label}
         className={`
-            rounded-lg w-[100%] flex flex-col
+            rounded-2xl w-[100%] flex flex-col px-3 py-3 border
+            bg-white/90 text-slate-800
             ${
               fieldState.error
                 ? "bg-red-50 border-red-500 text-red-900"
                 : !fieldState.invalid && fieldState.isDirty
-                ? "bg-green-50 border-green-500 text-green-900"
-                : ""
+                ? "border-[#5b7bff]/60"
+                : "border-white/70"
             }
+            focus:outline-none focus:ring-2 focus:ring-[#5b7bff]/30
         `}
       />
       {fieldState.error && (

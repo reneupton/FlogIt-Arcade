@@ -12,6 +12,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     options.Authority = builder.Configuration["IdentityServiceUrl"];
     options.RequireHttpsMetadata = false;
     options.TokenValidationParameters.ValidateAudience = false;
+    options.TokenValidationParameters.ValidateIssuer = false;
     options.TokenValidationParameters.NameClaimType = "username";
 });
 
@@ -21,6 +22,11 @@ builder.Services.AddCors(options => {
     });
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("proxy-auth", policy => policy.RequireAuthenticatedUser());
+});
+
 IdentityModelEventSource.ShowPII = true;
 
 
@@ -28,9 +34,9 @@ var app = builder.Build();
 
 app.UseCors();
 
-app.MapReverseProxy();
-
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapReverseProxy();
 
 app.Run();

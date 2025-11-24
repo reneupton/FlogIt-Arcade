@@ -1,9 +1,12 @@
+import { getCurrentUser } from "./actions/authActions";
 import Listings from "./auctions/Listings";
 
-export default function Home() {
+export default async function Home() {
+  const user = await getCurrentUser();
+
   return (
     <div>
-      <Listings />
+      <Listings user={user} />
     </div>
   )
 }

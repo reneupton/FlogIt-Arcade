@@ -23,7 +23,17 @@ public class AuctionUpdatedConsumer : IConsumer<AuctionUpdated>
 
         var result = DB.Update<Item>()
             .Match(a => a.ID == context.Message.Id)
-            .ModifyOnly(i => new {i.Make, i.Model, i.Year, i.Mileage, i.Colour}, item)
+            .ModifyOnly(i => new {
+                i.Title,
+                i.Brand,
+                i.Category,
+                i.Variant,
+                i.Condition,
+                i.Colorway,
+                i.ReleaseYear,
+                i.Specs,
+                i.ImageUrl
+            }, item)
             .ExecuteAsync();
 
         if (result.IsFaulted)

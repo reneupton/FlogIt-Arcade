@@ -1,4 +1,4 @@
-import { numberWithCommas } from '@/app/lib/numberWithComma';
+import { formatFlog } from '@/app/lib/numberWithComma';
 import { Bid } from '@/types'
 import { format } from 'date-fns';
 import React from 'react'
@@ -14,19 +14,19 @@ export default function BidItem({bid} : Props) {
 
         switch(bid.bidStatus) {
             case 'Accepted':
-                bgColor = 'bg-green-200'
+                bgColor = 'bg-emerald-100 text-emerald-800'
                 text = 'Bid accepted'
                 break;
             case 'AcceptedBelowReserve':
-                bgColor = 'bg-amber-500'
+                bgColor = 'bg-amber-100 text-amber-800'
                 text = 'Reserve not met'
                 break;
             case 'TooLow':
-                bgColor = 'bg-red-200'
+                bgColor = 'bg-rose-100 text-rose-800'
                 text = 'Bid was too low'
                 break;
             default:
-                bgColor = 'bg-red-200'
+                bgColor = 'bg-rose-100 text-rose-800'
                 text = 'Bid placed after auction finished'
                 break;
         }
@@ -35,16 +35,16 @@ export default function BidItem({bid} : Props) {
 
   return (
     <div className={`
-        border-gray-300 border-2 px-3 py-2 rounded-lg
-        flex justify-between items-center mb-2
+        border border-white/60 bg-white/85 px-3 py-3 rounded-2xl glass-panel
+        flex justify-between items-center mb-2 shadow-sm
         ${getBidInfo().bgColor}
     `}>
         <div className = 'flex flex-col'>
-            <span>Bidder: {bid.bidder}</span>
+            <span className='font-semibold text-slate-800'>Bidder: {bid.bidder}</span>
             <span className='text-gray-700 text-sm'>Time: {format(new Date(bid.bidTime), "dd MMM yyyy h:mm a")}</span>
         </div>
         <div className='flex flex-col text-right'>
-            <div className='text-xl font-semibold'>£{numberWithCommas(bid.amount)}</div>
+            <div className='text-xl font-semibold'>{formatFlog(bid.amount)}</div>
             <div className='flex flex-row items-center'>
                 <span>{getBidInfo().text}</span>
             </div>

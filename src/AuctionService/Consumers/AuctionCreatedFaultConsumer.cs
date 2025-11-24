@@ -13,7 +13,7 @@ public class AuctionCreatedFaultConsumer : IConsumer<Fault<AuctionCreated>>
 
         if (exception.ExceptionType == "System.ArgumentException")
         {
-            context.Message.Message.Model = "FooBar";
+            context.Message.Message.Title = "FooBar";
             await context.Publish(context.Message.Message);
         }
         else

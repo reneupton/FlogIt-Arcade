@@ -1,5 +1,6 @@
 using AutoMapper;
 using BiddingService.Models;
+using BiddingService.Services;
 using Contracts;
 using MassTransit;
 using Microsoft.AspNetCore.Authorization;
@@ -14,16 +15,18 @@ namespace BiddingService.Controllers
     {
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly GrpcAuctionClient grpcAuctionClient;
+        private readonly ProgressService progressService;
 
 
         private IMapper _mapper { get; }
 
 
-        public BidsController(IMapper mapper, IPublishEndpoint publishEndpoint, GrpcAuctionClient grpcAuctionClient)
+        public BidsController(IMapper mapper, IPublishEndpoint publishEndpoint, GrpcAuctionClient grpcAuctionClient, ProgressService progressService)
         {
             _mapper = mapper;
             _publishEndpoint = publishEndpoint;
             this.grpcAuctionClient = grpcAuctionClient;
+            this.progressService = progressService;
 
         }
 
@@ -80,6 +83,7 @@ namespace BiddingService.Controllers
             await DB.SaveAsync(bid);
 
             await _publishEndpoint.Publish(_mapper.Map<BidPlaced>(bid));
+            await progressService.AwardBidAsync(User.Identity.Name, amount, auctionId);
 
             return Ok(_mapper.Map<BidDto>(bid));
         }

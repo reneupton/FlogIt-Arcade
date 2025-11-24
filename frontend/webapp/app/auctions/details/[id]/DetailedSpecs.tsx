@@ -3,6 +3,7 @@
 import {Auction} from "@/types";
 import {Table} from "flowbite-react";
 import { useRouter } from "next/navigation";
+import { formatFlog } from "@/app/lib/numberWithComma";
 
 type Props = {
     auction: Auction
@@ -14,57 +15,91 @@ export default function DetailedSpecs({auction}: Props) {
     }
     
     return (
-        <Table striped={true}>
-            <Table.Body className="divide-y">
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                        Seller
-                    </Table.Cell>
-                    <Table.Cell>
-                        {auction.seller}
-                    </Table.Cell>
-                </Table.Row>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                        Make
-                    </Table.Cell>
-                    <Table.Cell>
-                        {auction.make}
-                    </Table.Cell>
-                </Table.Row>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                        Model
-                    </Table.Cell>
-                    <Table.Cell>
-                        {auction.model}
-                    </Table.Cell>
-                </Table.Row>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                        Year manufactured
-                    </Table.Cell>
-                    <Table.Cell>
-                        {auction.year}
-                    </Table.Cell>
-                </Table.Row>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                        Mileage
-                    </Table.Cell>
-                    <Table.Cell>
-                        {auction.mileage}
-                    </Table.Cell>
-                </Table.Row>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                        Has reserve price?
-                    </Table.Cell>
-                    <Table.Cell>
-                        {auction.reservePrice > 0 ? 'Yes' : 'No'}
-                    </Table.Cell>
-                </Table.Row>
-            </Table.Body>
-        </Table>
+        <div className="glass-panel rounded-2xl overflow-hidden border border-white/70">
+            <Table striped={false} className="text-slate-700">
+                <Table.Body className="divide-y divide-white/60">
+                    <Table.Row className="bg-transparent">
+                        <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
+                            Seller
+                        </Table.Cell>
+                        <Table.Cell>
+                            {auction.seller}
+                        </Table.Cell>
+                    </Table.Row>
+                    <Table.Row className="bg-transparent">
+                    <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
+                            Brand
+                        </Table.Cell>
+                        <Table.Cell>
+                            {auction.brand}
+                        </Table.Cell>
+                    </Table.Row>
+                    <Table.Row className="bg-transparent">
+                        <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
+                            Category
+                        </Table.Cell>
+                        <Table.Cell>
+                            {auction.category}
+                        </Table.Cell>
+                    </Table.Row>
+                    <Table.Row className="bg-transparent">
+                        <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
+                            Variant
+                        </Table.Cell>
+                        <Table.Cell>
+                            {auction.variant}
+                        </Table.Cell>
+                    </Table.Row>
+                    <Table.Row className="bg-transparent">
+                        <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
+                            Condition
+                        </Table.Cell>
+                        <Table.Cell>
+                            {auction.condition}
+                        </Table.Cell>
+                    </Table.Row>
+                    <Table.Row className="bg-transparent">
+                        <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
+                            Colorway
+                        </Table.Cell>
+                        <Table.Cell>
+                            {auction.colorway}
+                        </Table.Cell>
+                    </Table.Row>
+                    <Table.Row className="bg-transparent">
+                        <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
+                            Release year
+                        </Table.Cell>
+                        <Table.Cell>
+                            {auction.releaseYear ?? '—'}
+                        </Table.Cell>
+                    </Table.Row>
+                    <Table.Row className="bg-transparent">
+                        <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
+                            Specs
+                        </Table.Cell>
+                        <Table.Cell>
+                            {auction.specs}
+                        </Table.Cell>
+                    </Table.Row>
+                    <Table.Row className="bg-transparent">
+                        <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
+                            Has reserve price?
+                        </Table.Cell>
+                        <Table.Cell>
+                            {auction.reservePrice > 0 ? 'Yes' : 'No'}
+                        </Table.Cell>
+                    </Table.Row>
+                    <Table.Row className="bg-transparent">
+                        <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
+                            Reserve
+                        </Table.Cell>
+                        <Table.Cell>
+                            {auction.reservePrice > 0 ? formatFlog(auction.reservePrice) : 'No reserve'}
+                        </Table.Cell>
+                    </Table.Row>
+                </Table.Body>
+            </Table>
+        </div>
     );
 }

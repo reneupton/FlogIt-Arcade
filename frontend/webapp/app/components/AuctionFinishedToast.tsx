@@ -2,8 +2,7 @@ import { Auction, AuctionFinished } from '@/types'
 import Link from 'next/link'
 import React from 'react'
 import Image from 'next/image'
-import { numberWithCommas } from '../lib/numberWithComma'
-
+import { formatFlog } from '../lib/numberWithComma'
 
 type Props = {
     finishedAuction: AuctionFinished
@@ -13,22 +12,23 @@ type Props = {
 export default function AuctionFinishedToast({finishedAuction, auction} : Props) {
   return (
     <Link href={`/auctions/details/${auction.id}`} className='flex flex-col items-center'>
-        <div className='flex flex-row items-center gap-2'>
+        <div className='flex flex-row items-center gap-3 bg-white/85 px-3 py-2 rounded-2xl border border-white/70 shadow-lg'>
             <Image 
                 src={auction.imageUrl}
                 alt='image'
                 height={80}
                 width={80}
-                className='rounded-lg w-auto h-auto'          
+                className='rounded-xl w-auto h-auto shadow'
             />
 
-            <div className='flex flex-col'>
-                <span>Auction for {auction.make} {auction.model} has finished !</span>
+            <div className='flex flex-col text-left'>
+                <span className='font-semibold text-slate-800'>Auction finished: {auction.title} ({auction.brand})</span>
                 {finishedAuction.itemSold && finishedAuction.amount ? (
-                    <p>Congrats to {finishedAuction.winner} who has won this auction for 
-                    £${numberWithCommas(finishedAuction.amount)}</p>
+                    <p className='text-sm text-slate-600'>
+                      Congrats {finishedAuction.winner}! Victory price {formatFlog(finishedAuction.amount)}
+                    </p>
                 ) : (
-                    <p>This item did not sell</p>
+                    <p className='text-sm text-slate-600'>This item did not sell</p>
                 )}
             </div>
 

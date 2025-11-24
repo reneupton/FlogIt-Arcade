@@ -1,11 +1,19 @@
 using Contracts;
 using MassTransit;
+using BiddingService.Services;
 using MongoDB.Entities;
 
 namespace BiddingService.Consumers
 {
     public class AuctionCreatedConsumer : IConsumer<AuctionCreated>
     {
+        private readonly ProgressService progressService;
+
+        public AuctionCreatedConsumer(ProgressService progressService)
+        {
+            this.progressService = progressService;
+        }
+
         public async Task Consume(ConsumeContext<AuctionCreated> context){
             var auction = new Auction{
                 ID = context.Message.Id.ToString(),
@@ -15,6 +23,10 @@ namespace BiddingService.Consumers
             };
 
             await auction.SaveAsync();
+            if(!string.IsNullOrWhiteSpace(context.Message.Seller))
+            {
+                await progressService.AwardListingAsync(context.Message.Seller);
+            }
         }
     }
 }

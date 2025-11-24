@@ -8,14 +8,14 @@ import { getCurrentUser } from '../actions/authActions';
 export default async function Navbar() {
   const user = await getCurrentUser();
   return (
-    <header className='
-    sticky top-0 z-50 flex justify-between bg-white p-5 items-center text-gray-800 shadow-md
-    '>
-
-      <Logo />
-      <Search />
-
-      {user ? (<UserActions user={user} /> ) : ( <LoginButton />)}
+    <header className='sticky top-0 z-50 px-6 py-4 bg-white/60 backdrop-blur-2xl border-b border-white/70 shadow-[0_20px_40px_rgba(15,23,42,0.08)]'>
+      <div className='flex items-center gap-6'>
+        <Logo />
+        <div className='flex-1'>
+          <Search />
+        </div>
+        {user ? (<UserActions user={user} /> ) : ( <LoginButton />)}
+      </div>
     </header>
   )
 }

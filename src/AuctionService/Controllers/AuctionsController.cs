@@ -30,7 +30,7 @@ public class AuctionsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<AuctionDto>>> GetAllAuctions(string date)
     {
-        var query = _context.Auctions.OrderBy(x => x.Item.Make).AsQueryable();
+        var query = _context.Auctions.OrderBy(x => x.Item.Title).AsQueryable();
 
         if (!string.IsNullOrEmpty(date))
         {
@@ -86,11 +86,14 @@ public class AuctionsController : ControllerBase
         
         if(auction.Seller != User.Identity.Name) return Forbid();
 
-        auction.Item.Make = updateAuctionDto.Make ?? auction.Item.Make;
-        auction.Item.Model = updateAuctionDto.Model ?? auction.Item.Model;
-        auction.Item.Colour = updateAuctionDto.Colour ?? auction.Item.Colour;
-        auction.Item.Mileage = updateAuctionDto.Mileage ?? auction.Item.Mileage;
-        auction.Item.Year = updateAuctionDto.Year ?? auction.Item.Year;
+        auction.Item.Title = updateAuctionDto.Title ?? auction.Item.Title;
+        auction.Item.Brand = updateAuctionDto.Brand ?? auction.Item.Brand;
+        auction.Item.Category = updateAuctionDto.Category ?? auction.Item.Category;
+        auction.Item.Condition = updateAuctionDto.Condition ?? auction.Item.Condition;
+        auction.Item.Variant = updateAuctionDto.Variant ?? auction.Item.Variant;
+        auction.Item.Colorway = updateAuctionDto.Colorway ?? auction.Item.Colorway;
+        auction.Item.ReleaseYear = updateAuctionDto.ReleaseYear ?? auction.Item.ReleaseYear;
+        auction.Item.Specs = updateAuctionDto.Specs ?? auction.Item.Specs;
         
         await _publishEndpoint.Publish(_mapper.Map<AuctionUpdated>(auction));
 

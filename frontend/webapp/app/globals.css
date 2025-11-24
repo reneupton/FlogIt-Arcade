@@ -4,8 +4,44 @@
 
 @import "react-datepicker/dist/react-datepicker.css";
 
+:root {
+  --bg: #f5f7fb;
+  --bg-2: #eef2fb;
+  --card: rgba(255, 255, 255, 0.78);
+  --card-strong: rgba(255, 255, 255, 0.92);
+  --card-border: rgba(255, 255, 255, 0.6);
+  --text: #0f172a;
+  --muted: #475569;
+  --accent: #5b7bff;
+  --accent-2: #9f7aea;
+  --accent-3: #7dd3fc;
+  --shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+  --radius-lg: 22px;
+  --radius-sm: 14px;
+}
+
+* {
+  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Helvetica Neue", Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: radial-gradient(circle at 20% 20%, #e9f0ff 0, transparent 28%),
+    radial-gradient(circle at 80% 0, #f4e8ff 0, transparent 26%),
+    linear-gradient(180deg, var(--bg), var(--bg-2));
+  color: var(--text);
+}
+
 .react-datepicker-wrapper {
   width: 100%;
+}
+
+@layer base {
+  a {
+    @apply text-inherit no-underline;
+  }
 }
 
 @layer components {
@@ -17,5 +53,113 @@
         border-transparent
         focus:border-transparent
         focus:ring-0;
+  }
+
+  .glass-panel {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(14px);
+    box-shadow: var(--shadow);
+  }
+
+  .chip {
+    @apply px-4 py-2 rounded-full text-sm transition-all duration-150 border;
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(255, 255, 255, 0.7);
+    color: var(--muted);
+  }
+
+  .chip-active {
+    background: linear-gradient(120deg, var(--accent), var(--accent-2));
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 10px 30px rgba(91, 123, 255, 0.35);
+  }
+
+  .pill-input {
+    @apply rounded-full px-4 py-3 border transition-all duration-150;
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.8);
+  }
+
+  .pill-input:focus {
+    border-color: rgba(91, 123, 255, 0.7);
+    box-shadow: 0 0 0 3px rgba(91, 123, 255, 0.18);
+  }
+
+  .badge {
+    @apply inline-flex items-center text-xs font-medium rounded-full px-3 py-1;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+    color: var(--text);
+  }
+
+  .badge-positive {
+    background: linear-gradient(135deg, #3ad2a0, #4ade80);
+    color: #0f172a;
+  }
+
+  .badge-warn {
+    background: linear-gradient(135deg, #f97316, #fb7185);
+    color: #0f172a;
+  }
+
+  .badge-neutral {
+    background: linear-gradient(135deg, #cbd5e1, #e2e8f0);
+    color: #0f172a;
+  }
+
+  .soft-button {
+    @apply rounded-full px-4 py-2 font-medium transition-all duration-150;
+    background: linear-gradient(120deg, var(--accent), var(--accent-2));
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(91, 123, 255, 0.35);
+  }
+
+  .soft-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 34px rgba(91, 123, 255, 0.45);
+  }
+
+  .soft-button-ghost {
+    @apply rounded-full px-4 py-2 font-medium transition-all duration-150;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--muted);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+  }
+
+  .card-sheen {
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.12),
+        rgba(255, 255, 255, 0)
+      ),
+      var(--card);
+  }
+
+  .ios-shadow {
+    box-shadow:
+      0 20px 60px rgba(15, 23, 42, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  .pagination-soft li > * {
+    @apply border text-slate-600 transition-all duration-150;
+    border-color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+  }
+
+  .pagination-soft [aria-current="page"] {
+    background: linear-gradient(120deg, var(--accent), var(--accent-2));
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 10px 24px rgba(91, 123, 255, 0.28);
+  }
+
+  .pagination-soft li > *:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
   }
 }

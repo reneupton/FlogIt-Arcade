@@ -1,6 +1,12 @@
 import { getTokenWorkaround } from "@/app/actions/authActions";
 
-const baseUrl = process.env.API_URL;
+const rawBase =
+  typeof window === "undefined"
+    ? // During local dev use API_URL_LOCAL if provided, otherwise fall back to the public API URL
+      process.env.API_URL_LOCAL || process.env.API_URL || process.env.NEXT_PUBLIC_API_URL
+    : process.env.NEXT_PUBLIC_API_URL;
+
+const baseUrl = rawBase?.endsWith("/") ? rawBase : `${rawBase}/`;
 
 async function get(url: string) {
     const requestOptions = {

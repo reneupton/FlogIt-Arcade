@@ -11,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<ProgressService>();
+builder.Services.AddAuthorization();
 
 builder.Services.AddMassTransit(x =>
 {
@@ -50,6 +52,7 @@ builder.Services.AddScoped<GrpcAuctionClient>();
 
 var app = builder.Build();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
@@ -59,5 +62,7 @@ await Policy.Handle<TimeoutException>()
         .ExecuteAndCaptureAsync(async () => {
             await DB.InitAsync("BidDb", MongoClientSettings.FromConnectionString(builder.Configuration.GetConnectionString("BidDbConnection")));
         });
+
+await SeedProgressData.SeedAsync();
 
 app.Run();

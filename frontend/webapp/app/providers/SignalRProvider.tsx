@@ -11,6 +11,8 @@ import AuctionCreatedToast from "../components/AuctionCreatedToast";
 import { getDetailedViewData } from "../actions/auctionActions";
 import AuctionFinishedToast from "../components/AuctionFinishedToast";
 import BidPlacedToast from "../components/BidPlacedToast";
+import { getLeaderboard, getMyProgress } from "../actions/gamificationActions";
+import { useProfileStore } from "@/hooks/useProfileStore";
 
 type Props = {
   children: ReactNode;
@@ -21,6 +23,8 @@ export default function SignalRProvider({ children, user }: Props) {
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const setCurrentPrice = useAuctionStore((state) => state.setCurrentPrice);
   const addBid = useBidStore((state) => state.addBid);
+  const setProfile = useProfileStore((state) => state.setProfile);
+  const setLeaderboard = useProfileStore((state) => state.setLeaderboard);
   const apiUrl =
     process.env.NODE_ENV === "production"
       ? "https://api.flogitdemoapp.co.uk/notifications"
@@ -49,6 +53,15 @@ export default function SignalRProvider({ children, user }: Props) {
               setCurrentPrice(bid.auctionId, bid.amount);
             }
             addBid(bid);
+            if (user?.username === bid.bidder) {
+              getMyProgress()
+                .then((profile) => {
+                  setProfile(profile ?? undefined);
+                  return getLeaderboard();
+                })
+                .then(setLeaderboard)
+                .catch(() => {});
+            }
 
             const auction = getDetailedViewData(bid.auctionId);
             return toast.promise(
@@ -75,6 +88,20 @@ export default function SignalRProvider({ children, user }: Props) {
           connection.on(
             "AuctionFinished",
             (finishedAuction: AuctionFinished) => {
+              if (
+                user &&
+            (finishedAuction.winner === user.username ||
+              finishedAuction.seller === user.username)
+          ) {
+            getMyProgress()
+              .then((profile) => {
+                setProfile(profile ?? undefined);
+                return getLeaderboard();
+              })
+                  .then(setLeaderboard)
+                  .catch(() => {});
+              }
+
               const auction = getDetailedViewData(finishedAuction.auctionId);
               return toast.promise(
                 auction,
@@ -99,7 +126,7 @@ export default function SignalRProvider({ children, user }: Props) {
     return () => {
       connection?.stop();
     };
-  }, [connection, setCurrentPrice, addBid, user?.username]);
+  }, [connection, setCurrentPrice, addBid, user, setProfile, setLeaderboard]);
 
   return children;
 }
