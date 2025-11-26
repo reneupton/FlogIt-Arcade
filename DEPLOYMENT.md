@@ -28,6 +28,16 @@ CloudAMQP:  amqps://nucsvqes:uvYH19uvOeeNUoSIjgf27XH0ubeqQ7Rs@hawk.rmq.cloudamqp
 - **Password**: `uvYH19uvOeeNUoSIjgf27XH0ubeqQ7Rs`
 - **VirtualHost**: `nucsvqes`
 
+### Railway Internal Service Names:
+| Service | Internal Name |
+|---------|---------------|
+| Identity | `hero-exchange.railway.internal` |
+| Gateway | `gateway-service.railway.internal` |
+| Auction | `auction-service.railway.internal` |
+| Bidding | `bidding-service.railway.internal` |
+| Search | `search-service.railway.internal` |
+| Notification | `notification-service.railway.internal` |
+
 ---
 
 ## Step 1: Deploy Frontend to Vercel (FREE)
@@ -77,16 +87,27 @@ For each service below:
 
 ---
 
-### Identity Service
+### Identity Service (hero-exchange)
 **Dockerfile Path**: `src/IdentityService/dockerfile`
 
 ```env
 ASPNETCORE_ENVIRONMENT=Production
 ASPNETCORE_URLS=http://+:${{PORT}}
 ConnectionStrings__DefaultConnection=postgresql://postgres:tEtwsMDEpuDSMAvnxTyjAjVcBrDfZJkz@postgres.railway.internal:5432/railway
-ClientApp=https://hero-exchange-dmpir3zyo-dionuptons-projects.vercel.app
+ClientApp=https://hero-exchange-weld.vercel.app
 ClientSecret=secret
+IssuerUri=https://identity-service-production-115a.up.railway.app
 ```
+
+**Environment Variables Explained:**
+| Variable | Purpose |
+|----------|---------|
+| `ASPNETCORE_ENVIRONMENT` | Set to `Production` for Railway |
+| `ASPNETCORE_URLS` | Listen on Railway's dynamic port |
+| `ConnectionStrings__DefaultConnection` | PostgreSQL connection (uses internal URL) |
+| `ClientApp` | Vercel frontend URL (for OAuth redirects) |
+| `ClientSecret` | OAuth client secret (shared with Next.js app) |
+| `IssuerUri` | Public URL of Identity Service (for JWT issuer claim) |
 
 ---
 
@@ -96,8 +117,22 @@ ClientSecret=secret
 ```env
 ASPNETCORE_ENVIRONMENT=Production
 ASPNETCORE_URLS=http://+:${{PORT}}
-ClientApp=https://hero-exchange-dmpir3zyo-dionuptons-projects.vercel.app
+ClientApp=https://hero-exchange-weld.vercel.app
+AdminApp=https://hero-exchange-admin.vercel.app
+IdentityServiceUrl=http://hero-exchange.railway.internal
+ReverseProxy__Clusters__auctions__Destinations__auctionApi__Address=http://auction-service.railway.internal
+ReverseProxy__Clusters__search__Destinations__searchApi__Address=http://search-service.railway.internal
+ReverseProxy__Clusters__bids__Destinations__bidApi__Address=http://bidding-service.railway.internal
+ReverseProxy__Clusters__notifications__Destinations__notifyApi__Address=http://notification-service.railway.internal
 ```
+
+**Environment Variables Explained:**
+| Variable | Purpose |
+|----------|---------|
+| `ClientApp` | Frontend URL for CORS |
+| `AdminApp` | Admin console URL for CORS |
+| `IdentityServiceUrl` | Identity Service for JWT validation |
+| `ReverseProxy__Clusters__*` | Internal URLs for proxying to backend services |
 
 ---
 
@@ -112,7 +147,7 @@ RabbitMq__Username=nucsvqes
 RabbitMq__Password=uvYH19uvOeeNUoSIjgf27XH0ubeqQ7Rs
 RabbitMq__VirtualHost=nucsvqes
 ConnectionStrings__DefaultConnection=postgresql://postgres:tEtwsMDEpuDSMAvnxTyjAjVcBrDfZJkz@postgres.railway.internal:5432/railway
-IdentityServiceUrl=https://YOUR-IDENTITY-SERVICE.railway.app
+IdentityServiceUrl=http://hero-exchange.railway.internal
 Kestrel__Endpoints__Grpc__Protocols=Http2
 Kestrel__Endpoints__Grpc__Url=http://+:7777
 Kestrel__Endpoints__Webapi__Protocols=Http1
@@ -131,9 +166,9 @@ RabbitMq__Host=hawk.rmq.cloudamqp.com
 RabbitMq__Username=nucsvqes
 RabbitMq__Password=uvYH19uvOeeNUoSIjgf27XH0ubeqQ7Rs
 RabbitMq__VirtualHost=nucsvqes
-ConnectionStrings__BidDbConnection=mongodb://mongo:MKnNCIKJIMspHmbRDXsWtACAxXBjRnsi@mongodb.railway.internal:27017
-IdentityServiceUrl=https://YOUR-IDENTITY-SERVICE.railway.app
-GrpcAuction=http://YOUR-AUCTION-SERVICE.railway.internal:7777
+ConnectionStrings__BidDbConnection=mongodb://mongo:MKnNCIKJIMspHmbRDXsWtACAxXBjRnsi@mongodb.railway.internal:27017/BidDb?authSource=admin
+IdentityServiceUrl=http://hero-exchange.railway.internal
+GrpcAuction=http://auction-service.railway.internal:7777
 ```
 
 ---
@@ -148,8 +183,8 @@ RabbitMq__Host=hawk.rmq.cloudamqp.com
 RabbitMq__Username=nucsvqes
 RabbitMq__Password=uvYH19uvOeeNUoSIjgf27XH0ubeqQ7Rs
 RabbitMq__VirtualHost=nucsvqes
-ConnectionStrings__MongoDbConnection=mongodb://mongo:MKnNCIKJIMspHmbRDXsWtACAxXBjRnsi@mongodb.railway.internal:27017
-AuctionServiceUrl=http://YOUR-AUCTION-SERVICE.railway.internal
+ConnectionStrings__MongoDbConnection=mongodb://mongo:MKnNCIKJIMspHmbRDXsWtACAxXBjRnsi@mongodb.railway.internal:27017/SearchDb?authSource=admin
+AuctionServiceUrl=http://auction-service.railway.internal
 ```
 
 ---
@@ -164,8 +199,8 @@ RabbitMq__Host=hawk.rmq.cloudamqp.com
 RabbitMq__Username=nucsvqes
 RabbitMq__Password=uvYH19uvOeeNUoSIjgf27XH0ubeqQ7Rs
 RabbitMq__VirtualHost=nucsvqes
-ClientApp=https://hero-exchange-dmpir3zyo-dionuptons-projects.vercel.app
-AdminApp=https://YOUR-VERCEL-ADMIN.vercel.app
+ClientApp=https://hero-exchange-weld.vercel.app
+AdminApp=https://hero-exchange-admin.vercel.app
 ```
 
 ---
@@ -175,12 +210,12 @@ AdminApp=https://YOUR-VERCEL-ADMIN.vercel.app
 Once Railway services are deployed, update Vercel webapp with:
 
 ```env
-NEXT_PUBLIC_API_URL=https://YOUR-GATEWAY.railway.app
-NEXT_PUBLIC_NOTIFY_URL=https://YOUR-GATEWAY.railway.app/notifications
+NEXT_PUBLIC_API_URL=https://gateway-service-production-a4ca.up.railway.app
+NEXT_PUBLIC_NOTIFY_URL=https://gateway-service-production-a4ca.up.railway.app/notifications
 NEXTAUTH_SECRET=generate-a-strong-random-string-here
-NEXTAUTH_URL=https://YOUR-VERCEL-WEBAPP.vercel.app
-ID_URL=https://YOUR-IDENTITY-SERVICE.railway.app
-API_URL=https://YOUR-GATEWAY.railway.app/
+NEXTAUTH_URL=https://hero-exchange-weld.vercel.app
+ID_URL=https://identity-service-production-115a.up.railway.app
+API_URL=https://gateway-service-production-a4ca.up.railway.app/
 CLIENT_SECRET=secret
 ```
 
@@ -195,13 +230,13 @@ cd py-bots
 pip install -r requirements.txt
 
 # Create .env file with:
-API_BASE=https://YOUR-GATEWAY.railway.app/
-IDENTITY_URL=https://YOUR-IDENTITY-SERVICE.railway.app/
+API_BASE=https://gateway-service-production-a4ca.up.railway.app/
+IDENTITY_URL=https://identity-service-production-115a.up.railway.app/
 BOT_USERS=alice,bob
 BOT_PASSWORD=Pass123$
 
 # Run
-python -m main
+python bot.py
 ```
 
 ---
@@ -216,15 +251,17 @@ RabbitMq__UseSsl=true
 
 ### Internal vs External URLs
 - Use `.railway.internal` URLs for service-to-service communication within Railway (faster, no egress charges)
-- Use public `.railway.app` URLs for external access (Vercel, browsers)
+- Use public `.up.railway.app` URLs for external access (Vercel, browsers)
 
-### Replacing Placeholders
-Replace these placeholders with your actual Railway URLs:
-- `YOUR-VERCEL-WEBAPP` → Your Vercel webapp domain
-- `YOUR-VERCEL-ADMIN` → Your Vercel admin console domain
-- `YOUR-IDENTITY-SERVICE` → Railway identity service URL
-- `YOUR-GATEWAY` → Railway gateway service URL
-- `YOUR-AUCTION-SERVICE` → Railway auction service internal name
+### Your Railway Internal URLs:
+| Service | Internal URL |
+|---------|--------------|
+| Gateway | `http://gateway-service.railway.internal` |
+| Identity | `http://hero-exchange.railway.internal` |
+| Auction | `http://auction-service.railway.internal` |
+| Bidding | `http://bidding-service.railway.internal` |
+| Search | `http://search-service.railway.internal` |
+| Notification | `http://notification-service.railway.internal` |
 
 ---
 
@@ -247,3 +284,7 @@ Replace these placeholders with your actual Railway URLs:
 - Verify CloudAMQP credentials are correct
 - Ensure `RabbitMq__VirtualHost` is set (for free tier, it's your username)
 - CloudAMQP free tier has connection limits (3 concurrent connections)
+
+### gRPC issues (Bidding → Auction)
+- Ensure Auction Service exposes port 7777 for gRPC
+- Use internal URL: `http://auction-service.railway.internal:7777`

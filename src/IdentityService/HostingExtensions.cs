@@ -73,10 +73,11 @@ internal static class HostingExtensions
         app.UseStaticFiles();
         app.UseRouting();
 
-        if(app.Environment.IsProduction()) {
+        var issuerUri = app.Configuration["IssuerUri"];
+        if(app.Environment.IsProduction() && !string.IsNullOrEmpty(issuerUri)) {
             app.Use(async (ctx, next) => {
             var serverUrls = ctx.RequestServices.GetRequiredService<IServerUrls>();
-            serverUrls.Origin = serverUrls.Origin = "https://id.flogitdemoapp.co.uk";
+            serverUrls.Origin = issuerUri;
             await next();
         });
         }
