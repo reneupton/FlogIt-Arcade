@@ -14,34 +14,41 @@
 
 ---
 
-## Step 1: Deploy Frontend to Vercel (FREE)
+## Your Connection Strings
 
-### Prerequisites
-- GitHub account connected to your repos
-- Vercel account (sign up at vercel.com with GitHub)
+```
+PostgreSQL: postgresql://postgres:tEtwsMDEpuDSMAvnxTyjAjVcBrDfZJkz@postgres.railway.internal:5432/railway
+MongoDB:    mongodb://mongo:MKnNCIKJIMspHmbRDXsWtACAxXBjRnsi@mongodb.railway.internal:27017
+CloudAMQP:  amqps://nucsvqes:uvYH19uvOeeNUoSIjgf27XH0ubeqQ7Rs@hawk.rmq.cloudamqp.com/nucsvqes
+```
+
+### Parsed CloudAMQP Values:
+- **Host**: `hawk.rmq.cloudamqp.com`
+- **Username**: `nucsvqes`
+- **Password**: `uvYH19uvOeeNUoSIjgf27XH0ubeqQ7Rs`
+- **VirtualHost**: `nucsvqes`
+
+---
+
+## Step 1: Deploy Frontend to Vercel (FREE)
 
 ### Deploy Next.js Webapp
 
 1. Go to [vercel.com](https://vercel.com) and sign in with GitHub
 2. Click "Add New Project"
-3. Import `FlogIt-Tech` repository
+3. Import `FlogIt-Tech` (or `Hero-Exchange`) repository
 4. Configure:
    - **Framework Preset**: Next.js
    - **Root Directory**: `frontend/webapp`
    - **Build Command**: `npm run build`
    - **Output Directory**: `.next`
 
-5. Add Environment Variables (click "Environment Variables"):
+5. Add Environment Variables:
    ```
-   NEXT_PUBLIC_API_URL=https://your-gateway.railway.app
-   NEXT_PUBLIC_NOTIFY_URL=https://your-gateway.railway.app/notifications
    NEXTAUTH_SECRET=generate-a-strong-random-string-here
    NEXTAUTH_URL=https://your-vercel-app.vercel.app
-   ID_URL=https://your-identity.railway.app
-   API_URL=https://your-gateway.railway.app/
-   CLIENT_SECRET=secret
    ```
-   (Leave these as placeholders - we'll update after Railway setup)
+   (Add the rest after Railway is set up)
 
 6. Click "Deploy"
 
@@ -52,223 +59,191 @@
 3. Configure:
    - **Framework Preset**: Angular
    - **Root Directory**: `admin-console`
-   - **Build Command**: `npm run build` (or leave default)
+   - **Build Command**: `npm run build`
    - **Output Directory**: `dist/admin-console/browser`
 4. Click "Deploy"
 
 ---
 
-## Step 2: Set Up Railway (~$10/month)
+## Step 2: Deploy Services to Railway
 
-### Create Railway Account
-1. Go to [railway.app](https://railway.app)
-2. Sign in with GitHub
-3. Create a new project called "hero-exchange"
+### Create Each Service
 
-### Deploy Databases
-
-#### PostgreSQL
-1. In your project, click "+ New"
-2. Select "Database" → "PostgreSQL"
-3. Once deployed, click on it and go to "Variables"
-4. Copy the `DATABASE_URL` - you'll need this
-
-#### MongoDB
-1. Click "+ New" → "Database" → "MongoDB"
-2. Copy the `MONGO_URL` from variables
-
-#### RabbitMQ (Use CloudAMQP - FREE tier)
-1. Go to [cloudamqp.com](https://www.cloudamqp.com/)
-2. Sign up and create a "Little Lemur" instance (FREE)
-3. Copy the AMQP URL (looks like `amqps://user:pass@hostname/vhost`)
+For each service below:
+1. Click "+ New" → "GitHub Repo"
+2. Select your `Hero-Exchange` (or `FlogIt-Tech`) repo
+3. Set **Dockerfile Path** to the path shown below
+4. Add the environment variables listed
 
 ---
-
-## Step 3: Deploy .NET Services to Railway
-
-For each service, you'll add it from your GitHub repo:
 
 ### Identity Service
-1. Click "+ New" → "GitHub Repo"
-2. Select your `FlogIt-Tech` repo
-3. Configure:
-   - **Root Directory**: `/`
-   - **Build Command**: Leave default (Railway auto-detects .NET)
-   - **Dockerfile Path**: `src/IdentityService/dockerfile`
+**Dockerfile Path**: `src/IdentityService/dockerfile`
 
-4. Add Environment Variables:
-   ```
-   ASPNETCORE_ENVIRONMENT=Production
-   ASPNETCORE_URLS=http://+:80
-   ConnectionStrings__DefaultConnection=<your-railway-postgres-url>
-   ClientApp=https://your-vercel-app.vercel.app
-   ClientSecret=secret
-   ```
+```env
+ASPNETCORE_ENVIRONMENT=Production
+ASPNETCORE_URLS=http://+:${{PORT}}
+ConnectionStrings__DefaultConnection=postgresql://postgres:tEtwsMDEpuDSMAvnxTyjAjVcBrDfZJkz@postgres.railway.internal:5432/railway
+ClientApp=https://hero-exchange-dmpir3zyo-dionuptons-projects.vercel.app
+ClientSecret=secret
+```
+
+---
 
 ### Gateway Service
-Same process with these env vars:
-```
+**Dockerfile Path**: `src/GatewayService/dockerfile`
+
+```env
 ASPNETCORE_ENVIRONMENT=Production
-ASPNETCORE_URLS=http://+:80
-ClientApp=https://your-vercel-app.vercel.app
+ASPNETCORE_URLS=http://+:${{PORT}}
+ClientApp=https://hero-exchange-dmpir3zyo-dionuptons-projects.vercel.app
 ```
+
+---
 
 ### Auction Service
-```
+**Dockerfile Path**: `src/AuctionService/dockerfile`
+
+```env
 ASPNETCORE_ENVIRONMENT=Production
-ASPNETCORE_URLS=http://+:80
-RabbitMq__Host=<cloudamqp-host>
-RabbitMq__Username=<cloudamqp-user>
-RabbitMq__Password=<cloudamqp-pass>
-ConnectionStrings__DefaultConnection=<railway-postgres-url>
-IdentityServiceUrl=https://your-identity.railway.app
+ASPNETCORE_URLS=http://+:${{PORT}}
+RabbitMq__Host=hawk.rmq.cloudamqp.com
+RabbitMq__Username=nucsvqes
+RabbitMq__Password=uvYH19uvOeeNUoSIjgf27XH0ubeqQ7Rs
+RabbitMq__VirtualHost=nucsvqes
+ConnectionStrings__DefaultConnection=postgresql://postgres:tEtwsMDEpuDSMAvnxTyjAjVcBrDfZJkz@postgres.railway.internal:5432/railway
+IdentityServiceUrl=https://YOUR-IDENTITY-SERVICE.railway.app
+Kestrel__Endpoints__Grpc__Protocols=Http2
+Kestrel__Endpoints__Grpc__Url=http://+:7777
+Kestrel__Endpoints__Webapi__Protocols=Http1
+Kestrel__Endpoints__Webapi__Url=http://+:${{PORT}}
 ```
 
-### Bid Service
-```
+---
+
+### Bidding Service
+**Dockerfile Path**: `src/BiddingService/dockerfile`
+
+```env
 ASPNETCORE_ENVIRONMENT=Production
-ASPNETCORE_URLS=http://+:80
-RabbitMq__Host=<cloudamqp-host>
-ConnectionStrings__BidDbConnection=<railway-mongodb-url>
-IdentityServiceUrl=https://your-identity.railway.app
-GrpcAuction=https://your-auction.railway.app:7777
+ASPNETCORE_URLS=http://+:${{PORT}}
+RabbitMq__Host=hawk.rmq.cloudamqp.com
+RabbitMq__Username=nucsvqes
+RabbitMq__Password=uvYH19uvOeeNUoSIjgf27XH0ubeqQ7Rs
+RabbitMq__VirtualHost=nucsvqes
+ConnectionStrings__BidDbConnection=mongodb://mongo:MKnNCIKJIMspHmbRDXsWtACAxXBjRnsi@mongodb.railway.internal:27017
+IdentityServiceUrl=https://YOUR-IDENTITY-SERVICE.railway.app
+GrpcAuction=http://YOUR-AUCTION-SERVICE.railway.internal:7777
 ```
+
+---
 
 ### Search Service
-```
-ASPNETCORE_ENVIRONMENT=Production
-ASPNETCORE_URLS=http://+:80
-RabbitMq__Host=<cloudamqp-host>
-ConnectionStrings__MongoDbConnection=<railway-mongodb-url>
-AuctionServiceUrl=https://your-auction.railway.app
-```
+**Dockerfile Path**: `src/SearchService/dockerfile`
 
-### Notify Service
-```
+```env
 ASPNETCORE_ENVIRONMENT=Production
-ASPNETCORE_URLS=http://+:80
-RabbitMq__Host=<cloudamqp-host>
-ClientApp=https://your-vercel-app.vercel.app
+ASPNETCORE_URLS=http://+:${{PORT}}
+RabbitMq__Host=hawk.rmq.cloudamqp.com
+RabbitMq__Username=nucsvqes
+RabbitMq__Password=uvYH19uvOeeNUoSIjgf27XH0ubeqQ7Rs
+RabbitMq__VirtualHost=nucsvqes
+ConnectionStrings__MongoDbConnection=mongodb://mongo:MKnNCIKJIMspHmbRDXsWtACAxXBjRnsi@mongodb.railway.internal:27017
+AuctionServiceUrl=http://YOUR-AUCTION-SERVICE.railway.internal
 ```
 
 ---
 
-## Step 4: Update Vercel Environment Variables
+### Notification Service
+**Dockerfile Path**: `src/NotificationService/dockerfile`
 
-Once all Railway services are deployed, go back to Vercel and update:
-
-1. Go to your webapp project → Settings → Environment Variables
-2. Update with actual Railway URLs:
-   ```
-   NEXT_PUBLIC_API_URL=https://gateway-xxxxx.railway.app
-   NEXT_PUBLIC_NOTIFY_URL=https://gateway-xxxxx.railway.app/notifications
-   ID_URL=https://identity-xxxxx.railway.app
-   API_URL=https://gateway-xxxxx.railway.app/
-   ```
-3. Trigger a redeploy
+```env
+ASPNETCORE_ENVIRONMENT=Production
+ASPNETCORE_URLS=http://+:${{PORT}}
+RabbitMq__Host=hawk.rmq.cloudamqp.com
+RabbitMq__Username=nucsvqes
+RabbitMq__Password=uvYH19uvOeeNUoSIjgf27XH0ubeqQ7Rs
+RabbitMq__VirtualHost=nucsvqes
+ClientApp=https://hero-exchange-dmpir3zyo-dionuptons-projects.vercel.app
+AdminApp=https://YOUR-VERCEL-ADMIN.vercel.app
+```
 
 ---
 
-## Step 5: Run Python Bots Locally
+## Step 3: Update Vercel Environment Variables
 
-The easiest/cheapest option is running bots on your local machine:
+Once Railway services are deployed, update Vercel webapp with:
+
+```env
+NEXT_PUBLIC_API_URL=https://YOUR-GATEWAY.railway.app
+NEXT_PUBLIC_NOTIFY_URL=https://YOUR-GATEWAY.railway.app/notifications
+NEXTAUTH_SECRET=generate-a-strong-random-string-here
+NEXTAUTH_URL=https://YOUR-VERCEL-WEBAPP.vercel.app
+ID_URL=https://YOUR-IDENTITY-SERVICE.railway.app
+API_URL=https://YOUR-GATEWAY.railway.app/
+CLIENT_SECRET=secret
+```
+
+Then trigger a redeploy.
+
+---
+
+## Step 4: Run Python Bots Locally
 
 ```bash
 cd py-bots
 pip install -r requirements.txt
 
-# Create .env file
-echo "API_BASE=https://your-gateway.railway.app/" > .env
-echo "IDENTITY_URL=https://your-identity.railway.app/" >> .env
-echo "BOT_USERS=alice,bob" >> .env
-echo "BOT_PASSWORD=Pass123$" >> .env
+# Create .env file with:
+API_BASE=https://YOUR-GATEWAY.railway.app/
+IDENTITY_URL=https://YOUR-IDENTITY-SERVICE.railway.app/
+BOT_USERS=alice,bob
+BOT_PASSWORD=Pass123$
 
 # Run
 python -m main
 ```
 
-Or run with Docker:
-```bash
-docker-compose up bot-admin
-```
-
 ---
 
-## Step 6: Configure Identity Service CORS & Clients
+## Important Notes
 
-You'll need to update the Identity Service to allow your new domains:
+### CloudAMQP SSL
+CloudAMQP uses `amqps://` (SSL). MassTransit should handle this automatically when you provide the host. If you get SSL errors, you may need to add:
+```env
+RabbitMq__UseSsl=true
+```
 
-In `src/IdentityService/HostingExtensions.cs`, ensure CORS allows:
-- `https://your-app.vercel.app`
-- `https://your-admin.vercel.app`
+### Internal vs External URLs
+- Use `.railway.internal` URLs for service-to-service communication within Railway (faster, no egress charges)
+- Use public `.railway.app` URLs for external access (Vercel, browsers)
 
-In `src/IdentityService/Config.cs`, update the client redirect URIs.
+### Replacing Placeholders
+Replace these placeholders with your actual Railway URLs:
+- `YOUR-VERCEL-WEBAPP` → Your Vercel webapp domain
+- `YOUR-VERCEL-ADMIN` → Your Vercel admin console domain
+- `YOUR-IDENTITY-SERVICE` → Railway identity service URL
+- `YOUR-GATEWAY` → Railway gateway service URL
+- `YOUR-AUCTION-SERVICE` → Railway auction service internal name
 
 ---
 
 ## Troubleshooting
 
-### "Username and password required" in GitHub Actions
-Your existing workflows try to deploy to DigitalOcean. You can:
-1. Disable them (delete the workflow files)
-2. Or add secrets to GitHub (Settings → Secrets → Actions):
-   - `DOCKERHUB_USERNAME`
-   - `DOCKERHUB_PASSWORD`
-   - `DIGITALOCEAN_ACCESS_TOKEN`
+### Service crashes immediately
+- Check Railway logs for the specific error
+- Ensure all environment variables are set
+- CloudAMQP requires `RabbitMq__VirtualHost` to be set to your username
 
 ### CORS errors
-Make sure all services have the correct `ClientApp` URLs in their environment variables.
+- Ensure `ClientApp` and `AdminApp` URLs match your Vercel domains exactly
+- Include `https://` prefix
 
 ### Database connection issues
-- Ensure the connection strings use the full Railway URL
-- For MongoDB, the URL format is: `mongodb://user:pass@host:port/db?authSource=admin`
+- Railway internal URLs only work within the same Railway project
+- For MongoDB, ensure the URL includes the database name
 
----
-
-## Domain Setup (Optional)
-
-To use a custom domain like `heroexchange.com`:
-
-1. **Vercel**: Settings → Domains → Add your domain
-2. **Railway**: Each service has a "Settings" → "Networking" → Custom domain
-
----
-
-## Architecture Diagram
-
-```
-                    ┌─────────────────┐
-                    │   Your Browser  │
-                    └────────┬────────┘
-                             │
-              ┌──────────────┼──────────────┐
-              │              │              │
-              ▼              ▼              ▼
-    ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
-    │   Vercel    │  │   Vercel    │  │  Local PC   │
-    │   Webapp    │  │Admin Console│  │  Py Bots    │
-    │   (FREE)    │  │   (FREE)    │  │   (FREE)    │
-    └──────┬──────┘  └──────┬──────┘  └──────┬──────┘
-           │                │                │
-           └────────────────┼────────────────┘
-                            │
-                            ▼
-              ┌─────────────────────────┐
-              │    Railway Gateway      │
-              │    (routes requests)    │
-              └────────────┬────────────┘
-                           │
-         ┌─────────────────┼─────────────────┐
-         │                 │                 │
-         ▼                 ▼                 ▼
-    ┌─────────┐      ┌─────────┐      ┌─────────┐
-    │Identity │      │ Auction │      │  Bid    │
-    │ Service │      │ Service │      │ Service │
-    └────┬────┘      └────┬────┘      └────┬────┘
-         │                │                │
-         ▼                ▼                ▼
-    ┌─────────┐      ┌─────────┐      ┌─────────┐
-    │Postgres │      │Postgres │      │ MongoDB │
-    │(Railway)│      │(Railway)│      │(Railway)│
-    └─────────┘      └─────────┘      └─────────┘
-```
+### RabbitMQ connection refused
+- Verify CloudAMQP credentials are correct
+- Ensure `RabbitMq__VirtualHost` is set (for free tier, it's your username)
+- CloudAMQP free tier has connection limits (3 concurrent connections)

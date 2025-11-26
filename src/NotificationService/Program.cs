@@ -18,7 +18,7 @@ builder.Services.AddMassTransit(x =>
             r.Interval(5, TimeSpan.FromSeconds(10));
         });
 
-        cfg.Host(builder.Configuration["RabbitMq:Host"], "/", host =>
+        cfg.Host(builder.Configuration["RabbitMq:Host"], builder.Configuration.GetValue("RabbitMq:VirtualHost", "/"), host =>
         {
             host.Username(builder.Configuration.GetValue("RabbitMq:Username", "guest"));
             host.Password(builder.Configuration.GetValue("RabbitMq:Password", "guest"));
