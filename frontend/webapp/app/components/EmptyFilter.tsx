@@ -3,7 +3,6 @@
 import { useParamStore } from '@/hooks/useParamsStore'
 import React from 'react'
 import Heading from './Heading'
-import { Button } from 'flowbite-react'
 import { signIn } from 'next-auth/react'
 
 type Props = {
@@ -29,10 +28,10 @@ export default function EmptyFilter({
         <Heading title={title} subtitle={subtitle} center />
         <div className='mt-4'>
             {showReset && (
-                <Button outline color="light" className="soft-button-ghost" onClick={reset}>Remove Filters</Button>
+                <button className="soft-button-ghost px-5 py-2" onClick={reset}>Remove Filters</button>
             )}
             {showLogin && (
-                <Button outline color="light" className="soft-button-ghost ml-2" onClick={() => signIn('id-server', {callbackUrl})}>Login</Button>
+                <button className="soft-button-ghost px-5 py-2 ml-2" onClick={() => signIn('id-server', {callbackUrl})}>Login</button>
             )}
         </div>
     </div>

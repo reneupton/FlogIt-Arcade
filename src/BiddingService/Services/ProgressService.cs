@@ -6,13 +6,50 @@ namespace BiddingService.Services;
 
 public class ProgressService
 {
-    private const int XpPerLevel = 500;
+    private const int StatsPerLevel = 120;
+    private readonly Random rng = new();
+    private readonly (string rarity, int weight)[] rarityWeights = new[]
+    {
+        ("Common", 65),
+        ("Rare", 22),
+        ("Epic", 10),
+        ("Legendary", 3)
+    };
+
+    private readonly Dictionary<string, int> goldByRarity = new()
+    {
+        ["Common"] = 120,
+        ["Rare"] = 280,
+        ["Epic"] = 520,
+        ["Legendary"] = 900
+    };
 
     public async Task<UserProgress> GetOrCreateProfile(string username)
     {
         var profile = await DB.Find<UserProgress>().OneAsync(username);
 
-        if (profile != null) return profile;
+        if (profile != null)
+        {
+            profile.OwnedHeroes ??= new List<OwnedHero>();
+            profile.RecentPurchases ??= new List<string>();
+            profile.RecentSales ??= new List<string>();
+            profile.HeldBids ??= new List<HeldBid>();
+            await EnsureStarterPack(profile);
+            return profile;
+        }
+
+        // also try lookup by Username field for friendly-name identifiers
+        profile = await DB.Find<UserProgress>().Match(u => u.Username == username).ExecuteFirstAsync();
+
+        if (profile != null)
+        {
+            profile.OwnedHeroes ??= new List<OwnedHero>();
+            profile.RecentPurchases ??= new List<string>();
+            profile.RecentSales ??= new List<string>();
+            profile.HeldBids ??= new List<HeldBid>();
+            await EnsureStarterPack(profile);
+            return profile;
+        }
 
         profile = new UserProgress
         {
@@ -25,16 +62,21 @@ public class ProgressService
             Level = 1,
             RecentPurchases = new List<string>(),
             RecentSales = new List<string>(),
-            HeldBids = new List<HeldBid>()
+            HeldBids = new List<HeldBid>(),
+            OwnedHeroes = new List<OwnedHero>()
         };
 
+        await EnsureStarterPack(profile);
         await profile.SaveAsync();
         return profile;
     }
 
     private static void RefreshLevel(UserProgress profile)
     {
-        profile.Level = Math.Max(1, (profile.Experience / XpPerLevel) + 1);
+        profile.OwnedHeroes ??= new List<OwnedHero>();
+        var totalPower = CalculateHeroPower(profile);
+        profile.Experience = totalPower;
+        profile.Level = Math.Max(1, (totalPower / StatsPerLevel) + 1);
     }
 
     private static int CalculateCoinBonus(int? amount, double multiplier, int minimum)
@@ -45,14 +87,17 @@ public class ProgressService
 
     private static ProgressDto ToDto(UserProgress profile)
     {
+        profile.OwnedHeroes ??= new List<OwnedHero>();
+        var experience = CalculateHeroPower(profile);
         return new ProgressDto
         {
             Username = profile.Username,
             AvatarUrl = profile.AvatarUrl,
             Level = profile.Level,
-            Experience = profile.Experience,
-            NextLevelAt = profile.Level * XpPerLevel,
+            Experience = experience,
+            NextLevelAt = (profile.Level + 1) * StatsPerLevel,
             FlogBalance = profile.FlogBalance,
+            TotalHeroPower = experience,
             AuctionsCreated = profile.AuctionsCreated,
             AuctionsSold = profile.AuctionsSold,
             AuctionsWon = profile.AuctionsWon,
@@ -63,7 +108,8 @@ public class ProgressService
             HeldBids = profile.HeldBids.Select(h => new HeldBidDto { AuctionId = h.AuctionId, Amount = h.Amount }).ToList(),
             LastMysteryRewardAt = profile.LastMysteryRewardAt,
             LastMysteryRewardXp = profile.LastMysteryRewardXp,
-            LastMysteryRewardCoins = profile.LastMysteryRewardCoins
+            LastMysteryRewardCoins = profile.LastMysteryRewardCoins,
+            OwnedHeroes = profile.OwnedHeroes.Select(MapOwnedHero).ToList()
         };
     }
 
@@ -77,7 +123,6 @@ public class ProgressService
         }
 
         profile.LastDailyReward = DateTime.UtcNow;
-        profile.Experience += 50;
         profile.FlogBalance += 25;
 
         RefreshLevel(profile);
@@ -105,7 +150,6 @@ public class ProgressService
         }
 
         profile.BidsPlaced += 1;
-        profile.Experience += 20;
 
         RefreshLevel(profile);
         await profile.SaveAsync();
@@ -118,7 +162,6 @@ public class ProgressService
         var profile = await GetOrCreateProfile(username);
 
         profile.AuctionsCreated += 1;
-        profile.Experience += 120;
         profile.FlogBalance += 40;
 
         RefreshLevel(profile);
@@ -132,7 +175,6 @@ public class ProgressService
         var profile = await GetOrCreateProfile(username);
 
         profile.AuctionsSold += 1;
-        profile.Experience += 220;
         profile.FlogBalance += CalculateCoinBonus(amount, 0.08, 60);
 
         RefreshLevel(profile);
@@ -146,7 +188,6 @@ public class ProgressService
         var profile = await GetOrCreateProfile(username);
 
         profile.AuctionsWon += 1;
-        profile.Experience += 180;
         profile.FlogBalance += CalculateCoinBonus(amount, 0.05, 40);
 
         RefreshLevel(profile);
@@ -171,17 +212,26 @@ public class ProgressService
     public async Task<ProgressDto> GetProfile(string username)
     {
         var profile = await GetOrCreateProfile(username);
+        RefreshLevel(profile);
+        await profile.SaveAsync();
         return ToDto(profile);
     }
 
     public async Task<List<ProgressDto>> GetLeaderboard()
     {
-        var leaders = await DB.Find<UserProgress>()
-            .Sort(p => p.Descending(x => x.Experience))
-            .Limit(10)
-            .ExecuteAsync();
+        var leaders = await DB.Find<UserProgress>().ExecuteAsync();
+        var ordered = leaders
+            .Select(p =>
+            {
+                RefreshLevel(p);
+                return p;
+            })
+            .OrderByDescending(p => CalculateHeroPower(p))
+            .ThenByDescending(p => p.Level)
+            .Take(10)
+            .ToList();
 
-        return leaders.Select(ToDto).ToList();
+        return ordered.Select(ToDto).ToList();
     }
 
     public async Task SettleAuction(string auctionId, string winner)
@@ -206,33 +256,153 @@ public class ProgressService
         }
     }
 
-    public async Task<ProgressDto> OpenMystery(string username)
+    public async Task<SummonResultDto> OpenMystery(string username)
     {
         var profile = await GetOrCreateProfile(username);
+        profile.OwnedHeroes ??= new List<OwnedHero>();
         var now = DateTime.UtcNow;
         if (profile.LastMysteryRewardAt.HasValue && profile.LastMysteryRewardAt.Value.AddHours(24) > now)
         {
-            return ToDto(profile);
+            return new SummonResultDto
+            {
+                Profile = ToDto(profile),
+                Hero = null,
+                GoldAwarded = 0,
+                Rarity = string.Empty
+            };
         }
 
-        var rewards = new[]
-        {
-            (xp: 50, coins: 25),
-            (xp: 120, coins: 75),
-            (xp: 200, coins: 150),
-            (xp: 80, coins: 40),
-            (xp: 300, coins: 200)
-        };
+        var rarity = RollRarity();
+        var heroVariant = HeroCatalog.GetRandomVariant(rng, rarity);
+        var gold = goldByRarity[rarity];
 
-        var pick = rewards[new Random().Next(rewards.Length)];
-        profile.Experience += pick.xp;
-        profile.FlogBalance += pick.coins;
+        profile.FlogBalance += gold;
+        var ownedHero = new OwnedHero
+        {
+            HeroId = heroVariant.HeroId,
+            VariantId = heroVariant.VariantId,
+            Name = heroVariant.Name,
+            Discipline = heroVariant.Discipline,
+            Rarity = heroVariant.Rarity,
+            Strength = heroVariant.Strength,
+            Intellect = heroVariant.Intellect,
+            Vitality = heroVariant.Vitality,
+            Agility = heroVariant.Agility,
+            CardImage = heroVariant.CardImage,
+            AcquiredAt = now
+        };
+        profile.OwnedHeroes.Add(ownedHero);
+
+        profile.RecentPurchases ??= new List<string>();
+        profile.RecentPurchases.Insert(0, heroVariant.VariantId);
+        profile.RecentPurchases = profile.RecentPurchases.Take(50).ToList();
+
+        var powerGained = heroVariant.Strength + heroVariant.Intellect + heroVariant.Vitality + heroVariant.Agility;
         profile.LastMysteryRewardAt = now;
-        profile.LastMysteryRewardXp = pick.xp;
-        profile.LastMysteryRewardCoins = pick.coins;
+        profile.LastMysteryRewardXp = powerGained;
+        profile.LastMysteryRewardCoins = gold;
 
         RefreshLevel(profile);
         await profile.SaveAsync();
-        return ToDto(profile);
+
+        return new SummonResultDto
+        {
+            Profile = ToDto(profile),
+            Hero = MapOwnedHero(ownedHero),
+            GoldAwarded = gold,
+            Rarity = rarity
+        };
+    }
+
+    private string RollRarity()
+    {
+        var totalWeight = rarityWeights.Sum(r => r.weight);
+        var roll = rng.Next(0, totalWeight);
+        var cumulative = 0;
+        foreach (var (rarity, weight) in rarityWeights)
+        {
+            cumulative += weight;
+            if (roll < cumulative)
+            {
+                return rarity;
+            }
+        }
+
+        return "Common";
+    }
+
+    private static int CalculateHeroPower(UserProgress profile)
+    {
+        profile.OwnedHeroes ??= new List<OwnedHero>();
+        return profile.OwnedHeroes.Sum(h => h.Strength + h.Intellect + h.Vitality + h.Agility);
+    }
+
+    private static OwnedHeroDto MapOwnedHero(OwnedHero hero)
+    {
+        return new OwnedHeroDto
+        {
+            HeroId = hero.HeroId,
+            VariantId = hero.VariantId,
+            Name = hero.Name,
+            Discipline = hero.Discipline,
+            Rarity = hero.Rarity,
+            Strength = hero.Strength,
+            Intellect = hero.Intellect,
+            Vitality = hero.Vitality,
+            Agility = hero.Agility,
+            CardImage = hero.CardImage ?? string.Empty,
+            AcquiredAt = hero.AcquiredAt
+        };
+    }
+
+    private static async Task EnsureStarterPack(UserProgress profile)
+    {
+        var starterUsers = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "test",
+            "Dion Upton"
+        };
+
+        if (!starterUsers.Contains(profile.Username)) return;
+
+        profile.OwnedHeroes ??= new List<OwnedHero>();
+        if (profile.OwnedHeroes.Any())
+        {
+            return;
+        }
+
+        var starterChoices = new (string heroId, string rarity)[]
+        {
+            ("elyra", "Epic"),
+            ("grum", "Legendary"),
+            ("dresh", "Common"),
+            ("sigrun", "Rare")
+        };
+
+        foreach (var (heroId, rarity) in starterChoices)
+        {
+            var variant = HeroCatalog.GetVariant(heroId, rarity);
+            if (variant == null) continue;
+
+            profile.OwnedHeroes.Add(new OwnedHero
+            {
+                HeroId = variant.HeroId,
+                VariantId = variant.VariantId,
+                Name = variant.Name,
+                Discipline = variant.Discipline,
+                Rarity = variant.Rarity,
+                Strength = variant.Strength,
+                Intellect = variant.Intellect,
+                Vitality = variant.Vitality,
+                Agility = variant.Agility,
+                CardImage = variant.CardImage,
+                AcquiredAt = DateTime.UtcNow
+            });
+            profile.RecentPurchases ??= new List<string>();
+            profile.RecentPurchases.Insert(0, variant.VariantId);
+        }
+
+        RefreshLevel(profile);
+        await profile.SaveAsync();
     }
 }

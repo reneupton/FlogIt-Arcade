@@ -57,39 +57,39 @@ export default function Leaderboard({ userId, limit = 100 }: Props) {
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return <FaTrophy className="text-yellow-400 text-2xl" />;
+        return <FaTrophy className="text-[var(--accent-2)] text-2xl" />;
       case 2:
-        return <FaMedal className="text-gray-300 text-2xl" />;
+        return <FaMedal className="text-[var(--accent-3)] text-2xl" />;
       case 3:
-        return <FaMedal className="text-orange-400 text-2xl" />;
+        return <FaMedal className="text-[var(--accent)] text-2xl" />;
       default:
-        return <span className="text-gray-500 font-bold">#{rank}</span>;
+        return <span className="text-[var(--muted)] font-bold">#{rank}</span>;
     }
   };
 
   const getRankBgClass = (rank: number, isCurrentUser: boolean) => {
     if (isCurrentUser) {
-      return 'bg-blue-900 border-blue-500';
+      return 'bg-[rgba(34,211,238,0.08)] border-[var(--accent-3)]';
     }
     switch (rank) {
       case 1:
-        return 'bg-gradient-to-r from-yellow-900 to-yellow-800 border-yellow-500';
+        return 'bg-gradient-to-r from-[rgba(245,158,11,0.24)] to-[rgba(245,158,11,0.12)] border-[rgba(245,158,11,0.6)]';
       case 2:
-        return 'bg-gradient-to-r from-gray-800 to-gray-700 border-gray-400';
+        return 'bg-gradient-to-r from-[rgba(34,211,238,0.18)] to-[rgba(139,92,246,0.14)] border-[rgba(34,211,238,0.5)]';
       case 3:
-        return 'bg-gradient-to-r from-orange-900 to-orange-800 border-orange-500';
+        return 'bg-gradient-to-r from-[rgba(139,92,246,0.24)] to-[rgba(245,158,11,0.14)] border-[var(--accent)]';
       default:
-        return 'bg-gray-800 border-gray-700';
+        return 'bg-[rgba(26,32,48,0.7)] border-[var(--card-border)]';
     }
   };
 
   if (loading) {
     return (
-      <div className="bg-gray-900 rounded-xl p-6 shadow-2xl border border-gray-800">
+      <div className="glass-panel rounded-xl p-6 shadow-2xl border border-[var(--card-border)]">
         <div className="animate-pulse">
-          <div className="h-8 bg-gray-700 rounded w-48 mb-6"></div>
+          <div className="h-8 bg-[rgba(255,255,255,0.06)] rounded w-48 mb-6"></div>
           {[...Array(10)].map((_, i) => (
-            <div key={i} className="h-16 bg-gray-800 rounded mb-2"></div>
+            <div key={i} className="h-16 bg-[rgba(255,255,255,0.04)] rounded mb-2"></div>
           ))}
         </div>
       </div>
@@ -97,47 +97,35 @@ export default function Leaderboard({ userId, limit = 100 }: Props) {
   }
 
   return (
-    <div className="bg-gray-900 rounded-xl p-6 shadow-2xl border border-gray-800">
+    <div className="glass-panel rounded-xl p-6 shadow-2xl border border-[var(--card-border)] text-[var(--text)]">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-          <FaTrophy className="text-yellow-400" />
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <FaTrophy className="text-[var(--accent-2)]" />
           Leaderboard
         </h2>
-        <div className="text-sm text-gray-400">Top {limit} Players</div>
+        <div className="text-sm text-[var(--muted)]">Top {limit} Players</div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-6 border-b border-gray-800">
+      <div className="flex gap-3 mb-6">
         <button
           onClick={() => setActiveTab('level')}
-          className={`px-4 py-2 font-semibold transition-all ${
-            activeTab === 'level'
-              ? 'text-purple-400 border-b-2 border-purple-400'
-              : 'text-gray-400 hover:text-gray-300'
-          }`}
+          className={`chip ${activeTab === 'level' ? 'chip-active' : ''}`}
         >
           <FaStar className="inline mr-2" />
           Level
         </button>
         <button
           onClick={() => setActiveTab('flog')}
-          className={`px-4 py-2 font-semibold transition-all ${
-            activeTab === 'flog'
-              ? 'text-yellow-400 border-b-2 border-yellow-400'
-              : 'text-gray-400 hover:text-gray-300'
-          }`}
+          className={`chip ${activeTab === 'flog' ? 'chip-active' : ''}`}
         >
           <FaCoins className="inline mr-2" />
-          FLOG
+          Gold
         </button>
         <button
           onClick={() => setActiveTab('achievements')}
-          className={`px-4 py-2 font-semibold transition-all ${
-            activeTab === 'achievements'
-              ? 'text-green-400 border-b-2 border-green-400'
-              : 'text-gray-400 hover:text-gray-300'
-          }`}
+          className={`chip ${activeTab === 'achievements' ? 'chip-active' : ''}`}
         >
           <FaAward className="inline mr-2" />
           Achievements
@@ -145,9 +133,9 @@ export default function Leaderboard({ userId, limit = 100 }: Props) {
       </div>
 
       {/* Leaderboard List */}
-      <div className="space-y-2 max-h-[600px] overflow-y-auto">
+      <div className="space-y-2 max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-glow">
         {sortedLeaderboard.length === 0 ? (
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-[var(--muted)]">
             <FaTrophy className="text-5xl mx-auto mb-3 opacity-30" />
             <p>No leaderboard data available</p>
           </div>
@@ -171,14 +159,14 @@ export default function Leaderboard({ userId, limit = 100 }: Props) {
                 {/* User Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="text-white font-semibold truncate">
+                    <h3 className="text-[var(--text)] font-semibold truncate">
                       {entry.username}
                       {isCurrentUser && (
-                        <span className="ml-2 text-xs text-blue-400">(You)</span>
+                        <span className="ml-2 text-xs text-[var(--accent-3)]">(You)</span>
                       )}
                     </h3>
                   </div>
-                  <div className="text-sm text-gray-400">{entry.title}</div>
+                  <div className="text-sm text-[var(--muted)]">{entry.title}</div>
                 </div>
 
                 {/* Stats */}
@@ -186,34 +174,50 @@ export default function Leaderboard({ userId, limit = 100 }: Props) {
                   {activeTab === 'level' && (
                     <>
                       <div className="text-center">
-                        <div className="text-purple-400 font-bold text-lg">
+                        <div className="text-[var(--accent)] font-bold text-lg">
                           {entry.level}
                         </div>
-                        <div className="text-gray-500 text-xs">Level</div>
+                        <div className="text-[var(--muted)] text-xs">Level</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-purple-300 font-semibold">
+                        <div className="text-[var(--accent-3)] font-semibold">
                           {entry.xp.toLocaleString()}
                         </div>
-                        <div className="text-gray-500 text-xs">XP</div>
+                        <div className="text-[var(--muted)] text-xs">XP</div>
                       </div>
                     </>
                   )}
                   {activeTab === 'flog' && (
-                    <div className="text-center">
-                      <div className="text-yellow-400 font-bold text-lg">
-                        {entry.flogBalance.toLocaleString()}
+                    <>
+                      <div className="text-center">
+                        <div className="text-[var(--accent-2)] font-bold text-lg">
+                          {entry.flogBalance.toLocaleString()}
+                        </div>
+                        <div className="text-[var(--muted)] text-xs">Gold</div>
                       </div>
-                      <div className="text-gray-500 text-xs">FLOG</div>
-                    </div>
+                      <div className="text-center">
+                        <div className="text-[var(--accent)] font-semibold">
+                          {entry.level}
+                        </div>
+                        <div className="text-[var(--muted)] text-xs">Level</div>
+                      </div>
+                    </>
                   )}
                   {activeTab === 'achievements' && (
-                    <div className="text-center">
-                      <div className="text-green-400 font-bold text-lg">
-                        {entry.achievementCount}
+                    <>
+                      <div className="text-center">
+                        <div className="text-[var(--accent-3)] font-bold text-lg">
+                          {entry.achievementCount}
+                        </div>
+                        <div className="text-[var(--muted)] text-xs">Unlocks</div>
                       </div>
-                      <div className="text-gray-500 text-xs">Achievements</div>
-                    </div>
+                      <div className="text-center">
+                        <div className="text-[var(--accent-2)] font-semibold">
+                          {entry.level}
+                        </div>
+                        <div className="text-[var(--muted)] text-xs">Level</div>
+                      </div>
+                    </>
                   )}
                 </div>
               </div>
@@ -224,8 +228,8 @@ export default function Leaderboard({ userId, limit = 100 }: Props) {
 
       {/* User's Current Rank */}
       {userId && !sortedLeaderboard.some((e) => e.userId === userId) && (
-        <div className="mt-4 pt-4 border-t border-gray-800">
-          <div className="text-sm text-gray-400 text-center">
+        <div className="mt-4 pt-4 border-t border-[var(--card-border)]">
+          <div className="text-sm text-[var(--muted)] text-center">
             You are not currently ranked in the top {limit}
           </div>
         </div>

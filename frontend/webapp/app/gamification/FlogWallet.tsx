@@ -49,7 +49,7 @@ export default function FlogWallet({ userId, compact = false }: Props) {
         <span className="font-bold text-lg">
           {wallet.flogBalance.toLocaleString()}
         </span>
-        <span className="text-sm opacity-90">FLOG</span>
+        <span className="text-sm opacity-90">Gold</span>
       </div>
     );
   }
@@ -60,7 +60,7 @@ export default function FlogWallet({ userId, compact = false }: Props) {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-white flex items-center gap-2">
           <FaCoins className="text-yellow-500" />
-          FLOG Wallet
+          Gold Wallet
         </h2>
         <div className="text-sm text-gray-400">Demo Currency</div>
       </div>
@@ -71,7 +71,7 @@ export default function FlogWallet({ userId, compact = false }: Props) {
         <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">
           {wallet.flogBalance.toLocaleString()}
         </div>
-        <div className="text-gray-400 text-lg">FLOG</div>
+        <div className="text-gray-400 text-lg">Gold</div>
       </div>
 
       {/* Stats Grid */}

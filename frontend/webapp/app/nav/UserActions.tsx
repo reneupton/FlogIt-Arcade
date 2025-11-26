@@ -21,10 +21,14 @@ export default function UserActions({user} : Props) {
   const setParams = useParamStore(state => state.setParams);
   const profile = useProfileStore((state) => state.profile);
 
-  const ensureDicebearPng = (url: string) =>
-    url.includes("dicebear.com")
-      ? url.replace("/svg", "/png")
-      : url;
+  const ensureDicebearPng = (url: string) => {
+    if (!url.includes("dicebear.com")) return url;
+    const converted = url
+      .replace(/\/7\.x\/[^/]+\//, "/7.x/adventurer/")
+      .replace("/svg", "/png");
+    if (converted.includes("?")) return converted;
+    return `${converted}?seed=${user?.username ?? "avatar"}&backgroundType=gradientLinear&radius=40`;
+  };
 
   function setWinner(){
     setParams({winner: user.username, seller: undefined, filterBy: 'finished'})
@@ -38,25 +42,25 @@ export default function UserActions({user} : Props) {
 
   const avatar = ensureDicebearPng(
     profile?.avatarUrl ??
-      `https://api.dicebear.com/7.x/thumbs/png?seed=${user.username}&backgroundType=gradientLinear&radius=40`
+      `https://api.dicebear.com/7.x/adventurer/png?seed=${user.username}&backgroundType=gradientLinear&radius=40`
   );
 
   const label = (
-    <div className="flex items-center gap-3 bg-white/70 px-3 py-2 rounded-full border border-white/70 shadow-md">
+    <div className="flex items-center gap-3 bg-[rgba(26,32,48,0.9)] px-3 py-2 rounded-full border border-[var(--card-border)] shadow-md">
       <div className="relative">
-        <div className="h-10 w-10 rounded-full overflow-hidden border border-white/70 shadow relative">
+        <div className="h-10 w-10 rounded-full overflow-hidden border border-[var(--card-border)] shadow relative">
           <Image src={avatar} alt="avatar" fill className="object-cover" />
         </div>
-        <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-[10px] bg-white/95 rounded-full px-2 py-0.5 shadow font-semibold text-slate-700">
+        <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-[10px] bg-gradient-to-r from-[var(--accent)] to-[var(--accent-3)] text-[var(--bg)] rounded-full px-2 py-0.5 shadow font-semibold">
           Lv {profile?.level ?? 1}
         </span>
       </div>
       <div className="flex flex-col leading-tight text-left">
-        <span className="text-xs text-slate-500">Welcome back</span>
-        <span className="font-semibold text-slate-800">{user.name ?? user.username}</span>
-        <div className="flex gap-1 text-[10px] text-slate-600">
-          <span className="badge badge-positive">FLOG {numberWithCommas(profile?.flogBalance ?? 0)}</span>
-          <span className="badge badge-neutral">XP {numberWithCommas(profile?.experience ?? 0)}</span>
+        <span className="text-xs text-[var(--muted)]">Welcome back</span>
+        <span className="font-semibold text-[var(--text)]">{user.name ?? user.username}</span>
+        <div className="flex gap-1 text-[10px] text-[var(--muted)]">
+          <span className="badge badge-positive">Gold {numberWithCommas(profile?.flogBalance ?? 0)}</span>
+          <span className="badge badge-neutral-soft">XP {numberWithCommas(profile?.experience ?? 0)}</span>
         </div>
       </div>
     </div>
@@ -66,18 +70,19 @@ export default function UserActions({user} : Props) {
     <Dropdown
     inline
     label={label}
+    className="bg-[rgba(26,32,48,0.95)] border border-[var(--card-border)] rounded-2xl shadow-[0_16px_40px_rgba(0,0,0,0.35)] text-[var(--text)]"
   >
-    <Dropdown.Item icon={HiMiniSparkles} onClick={setSeller}>
+    <Dropdown.Item className="text-[var(--text)] hover:bg-[rgba(139,92,246,0.15)]" icon={HiMiniSparkles} onClick={setSeller}>
         My Auctions
     </Dropdown.Item>
-    <Dropdown.Item icon={BsTrophy} onClick={setWinner}>
+    <Dropdown.Item className="text-[var(--text)] hover:bg-[rgba(139,92,246,0.15)]" icon={BsTrophy} onClick={setWinner}>
         Auctions won
     </Dropdown.Item>
-    <Dropdown.Item icon={HiOutlineRocketLaunch} onClick={() => router.push('/auctions/create')}>
-        List new gear
+    <Dropdown.Item className="text-[var(--text)] hover:bg-[rgba(139,92,246,0.15)]" icon={HiOutlineRocketLaunch} onClick={() => router.push('/auctions/create')}>
+        List a hero
     </Dropdown.Item>
     <Dropdown.Divider />
-    <Dropdown.Item onClick={() => signOut({callbackUrl: '/'})}>
+    <Dropdown.Item className="text-[var(--text)] hover:bg-[rgba(244,63,94,0.15)]" onClick={() => signOut({callbackUrl: '/'})}>
       Sign out
     </Dropdown.Item>
   </Dropdown>

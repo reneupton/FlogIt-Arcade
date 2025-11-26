@@ -11,7 +11,7 @@ const nextConfig = {
             'images.unsplash.com',
             'api.dicebear.com'
         ]
-    }, output: 'standalone'
+    }
 }
 
 module.exports = nextConfig

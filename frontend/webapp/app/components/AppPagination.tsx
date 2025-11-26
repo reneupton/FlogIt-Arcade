@@ -16,7 +16,7 @@ export default function AppPagination({currentPage, pageCount, pageChanged} : Pr
         totalPages={pageCount}
         layout='pagination'
         showIcons={true}
-        className='pagination-soft mb-8'
+        className='pagination-soft mb-8 bg-transparent'
     />
   )
 }

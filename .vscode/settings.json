@@ -1,10 +1,11 @@
 {
-    "dotnet.defaultSolution": "FlogIt.sln",
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.python"
-    },
-    "python.formatting.provider": "none",
-    "vs-kubernetes": {
-        "disable-linters": ["resource-limits"]
+    "workbench.colorCustomizations": {
+        "titleBar.activeBackground": "#1b4332",
+        "titleBar.inactiveBackground": "#1b4332CC",
+        "titleBar.activeForeground": "#e9f5ec",
+        "titleBar.inactiveForeground": "#cde3d4",
+        "statusBar.background": "#1b4332",
+        "statusBar.foreground": "#e9f5ec",
+        "statusBarItem.hoverBackground": "#2d6a4f"
     }
 }

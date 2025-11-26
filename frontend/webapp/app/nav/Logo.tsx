@@ -3,6 +3,8 @@
 import { useParamStore } from "@/hooks/useParamsStore";
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
+import heroIcon from "@/public/icon2.png";
 
 export default function Logo() {
   const router = useRouter()
@@ -19,13 +21,19 @@ export default function Logo() {
       onClick={doReset}
       className="cursor-pointer flex items-center gap-3 text-3xl font-bold"
     >
-      <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-[#5b7bff] via-[#9f7aea] to-[#7dd3fc] flex items-center justify-center text-white shadow-lg relative overflow-hidden">
-        <span className="text-xl font-extrabold tracking-tight">FI</span>
-        <span className="absolute inset-0 bg-white/10" />
+      <div className="h-18 w-18 md:h-20 md:w-20 rounded-[26px] relative overflow-hidden" style={{ backgroundColor: 'transparent' }}>
+        <Image
+          src={heroIcon}
+          alt="Hero Exchange"
+          fill
+          className="object-contain drop-shadow-xl pointer-events-none"
+          sizes="80px"
+          priority
+        />
       </div>
       <div className="flex flex-col leading-tight">
-        <div className="text-xl font-extrabold text-slate-900 tracking-tight">FLOG IT - TECH</div>
-        <div className="text-xs uppercase text-slate-500 tracking-[0.3em]">Arcade Auctions</div>
+        <div className="text-xl font-extrabold text-[var(--text)] tracking-tight">Hero Exchange</div>
+        <div className="text-xs uppercase text-[var(--muted)] tracking-[0.3em]">RPG Hero Market</div>
       </div>
     </div>
   );

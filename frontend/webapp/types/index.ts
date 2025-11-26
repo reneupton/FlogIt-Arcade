@@ -80,6 +80,8 @@ export type PagedResult<T> = {
     experience: number
     nextLevelAt: number
     flogBalance: number
+    goldBalance?: number
+    totalHeroPower?: number
     auctionsCreated: number
     auctionsSold: number
     auctionsWon: number
@@ -91,4 +93,19 @@ export type PagedResult<T> = {
     recentPurchases?: string[]
     recentSales?: string[]
     heldBids?: { auctionId: string; amount: number }[]
+    ownedHeroes?: OwnedHero[]
+  }
+
+  export type OwnedHero = {
+    heroId: string
+    variantId: string
+    name: string
+    discipline: string
+    rarity: string
+    strength: number
+    intellect: number
+    vitality: number
+    agility: number
+    cardImage?: string
+    acquiredAt?: string
   }

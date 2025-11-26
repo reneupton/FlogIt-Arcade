@@ -45,22 +45,22 @@ function badge(text: string) {
 export default function AdminActionToast(props: Props) {
   if (props.type === "progress") {
     const { payload } = props;
-    const parts = [];
+    const parts: string[] = [];
     if (payload.balanceDelta) {
-      parts.push(`${payload.balanceDelta > 0 ? "⬆️" : "⬇️"} ${payload.balanceDelta} FLOG`);
+      parts.push(`${payload.balanceDelta > 0 ? "⬆️" : "⬇️"} ${payload.balanceDelta} Gold`);
     }
     if (payload.xpDelta) {
-      parts.push(`${payload.xpDelta > 0 ? "📈" : "📉"} ${payload.xpDelta} XP`);
+      parts.push(`${payload.xpDelta > 0 ? "✨" : "⬇️"} ${payload.xpDelta} XP`);
     }
     if (payload.level) {
-      parts.push(`🎯 Lv ${payload.level}`);
+      parts.push(`⭐ Lv ${payload.level}`);
     }
     return (
       <div className="flex items-center gap-3 bg-white/90 px-3 py-2 rounded-2xl border border-white/70 shadow-lg">
-        <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-200 via-sky-200 to-indigo-200 flex items-center justify-center text-xl">⚡</div>
+        <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-200 via-sky-200 to-indigo-200 flex items-center justify-center text-xl">🔔</div>
         <div className="flex flex-col text-slate-800">
           <span className="font-semibold">Admin updated your progress</span>
-          <span className="text-sm text-slate-600">{parts.join("  •  ") || "Changes applied"}</span>
+          <span className="text-sm text-slate-600">{parts.join(" • ") || "Changes applied"}</span>
           <div className="flex gap-2 mt-1">
             {badge(payload.updatedBy ? `By ${payload.updatedBy}` : "Admin action")}
             {payload.reason ? badge(payload.reason) : null}
@@ -79,13 +79,28 @@ export default function AdminActionToast(props: Props) {
             <Image src={payload.avatarUrl} alt="New avatar" fill className="object-cover" />
           </div>
         ) : (
-          <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-amber-200 via-pink-200 to-rose-200 flex items-center justify-center text-xl">🖼️</div>
+          <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-rose-200 via-amber-200 to-emerald-200 flex items-center justify-center text-xl">🪄</div>
         )}
         <div className="flex flex-col text-slate-800">
-          <span className="font-semibold">Avatar refreshed</span>
-          <span className="text-sm text-slate-600">{payload.username}</span>
+          <span className="font-semibold">Avatar updated</span>
+          <span className="text-sm text-slate-600">Changed by {payload.updatedBy ?? "admin"}</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (props.type === "status") {
+    const { payload } = props;
+    return (
+      <div className="flex items-center gap-3 bg-white/90 px-3 py-2 rounded-2xl border border-white/70 shadow-lg">
+        <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-blue-200 via-indigo-200 to-purple-200 flex items-center justify-center text-xl">📜</div>
+        <div className="flex flex-col text-slate-800">
+          <span className="font-semibold">Auction status updated</span>
+          <span className="text-sm text-slate-600">
+            {payload.status} • {payload.title ?? payload.auctionId}
+          </span>
           <div className="flex gap-2 mt-1">
-            {badge(payload.updatedBy ? `By ${payload.updatedBy}` : "Admin action")}
+            {badge(payload.changedBy ? `By ${payload.changedBy}` : "Admin action")}
           </div>
         </div>
       </div>
@@ -96,12 +111,10 @@ export default function AdminActionToast(props: Props) {
     const { payload } = props;
     return (
       <div className="flex items-center gap-3 bg-white/90 px-3 py-2 rounded-2xl border border-white/70 shadow-lg">
-        <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-orange-200 via-amber-200 to-yellow-200 flex items-center justify-center text-xl">
-          ⏱️
-        </div>
+        <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-cyan-200 via-blue-200 to-indigo-200 flex items-center justify-center text-xl">⏱️</div>
         <div className="flex flex-col text-slate-800">
-          <span className="font-semibold">Cooldowns reset</span>
-          <span className="text-sm text-slate-600">{payload.username}</span>
+          <span className="font-semibold">Cooldown reset</span>
+          <span className="text-sm text-slate-600">For {payload.username}</span>
           <div className="flex gap-2 mt-1">
             {badge(payload.updatedBy ? `By ${payload.updatedBy}` : "Admin action")}
           </div>
@@ -110,22 +123,5 @@ export default function AdminActionToast(props: Props) {
     );
   }
 
-  const { payload } = props;
-  return (
-    <div className="flex items-center gap-3 bg-white/90 px-3 py-2 rounded-2xl border border-white/70 shadow-lg">
-      <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-blue-200 via-cyan-200 to-emerald-200 flex items-center justify-center text-xl">
-        🛎️
-      </div>
-      <div className="flex flex-col text-slate-800">
-        <span className="font-semibold">{payload.status}</span>
-        <span className="text-sm text-slate-600">
-          {payload.title ? `${payload.title}` : payload.auctionId}
-          {payload.brand ? ` • ${payload.brand}` : ""}
-        </span>
-        <div className="flex gap-2 mt-1">
-          {badge(payload.changedBy ? `By ${payload.changedBy}` : "Admin action")}
-        </div>
-      </div>
-    </div>
-  );
+  return null;
 }

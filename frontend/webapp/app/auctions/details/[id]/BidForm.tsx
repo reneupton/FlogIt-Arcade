@@ -6,7 +6,7 @@ type Props = {
 };
 
 import { placeBidForAuction } from "@/app/actions/auctionActions";
-import { formatFlog, numberWithCommas } from "@/app/lib/numberWithComma";
+import { formatGold, numberWithCommas } from "@/app/lib/numberWithComma";
 import { awardGamification, getMyProgress } from "@/app/actions/gamificationActions";
 import { useBidStore } from "@/hooks/useBidStore";
 import { useProfileStore } from "@/hooks/useProfileStore";
@@ -26,7 +26,7 @@ export default function BidForm({ auctionId, highBid }: Props) {
   async function onSubmit(data: FieldValues) {
     if (data.amount <= highBid) {
       reset();
-      return toast.error(`Bid must be at least ${formatFlog(highBid + 1)}`);
+      return toast.error(`Bid must be at least ${formatGold(highBid + 1)}`);
     }
 
     placeBidForAuction(auctionId, +data.amount)
@@ -53,7 +53,7 @@ export default function BidForm({ auctionId, highBid }: Props) {
         className="input-custom text-sm text-gray-700"
         placeholder={`Enter your bid (minimum bid is ${numberWithCommas(
           highBid + 1
-        )} FLOG)`}
+        )} Gold)`}
       />
       <button
         type="submit"

@@ -20,4 +20,5 @@ public class UserProgress : Entity
     public DateTime? LastMysteryRewardAt { get; set; }
     public int? LastMysteryRewardXp { get; set; }
     public int? LastMysteryRewardCoins { get; set; }
+    public List<OwnedHero> OwnedHeroes { get; set; } = new();
 }

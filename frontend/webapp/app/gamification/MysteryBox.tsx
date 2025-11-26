@@ -66,31 +66,31 @@ export default function MysteryBox({ userId, userBalance, onPurchase }: Props) {
     switch (tier) {
       case 'Bronze':
         return {
-          gradient: 'from-orange-800 to-orange-900',
-          borderColor: 'border-orange-700',
-          iconColor: 'text-orange-400',
-          glowColor: 'shadow-orange-500/30',
+          gradient: 'from-[rgba(245,158,11,0.28)] to-[rgba(245,158,11,0.12)]',
+          borderColor: 'border-[rgba(245,158,11,0.6)]',
+          iconColor: 'text-[var(--accent-2)]',
+          glowColor: 'shadow-[0_15px_40px_rgba(245,158,11,0.25)]',
         };
       case 'Silver':
         return {
-          gradient: 'from-gray-400 to-gray-600',
-          borderColor: 'border-gray-400',
-          iconColor: 'text-gray-300',
-          glowColor: 'shadow-gray-400/30',
+          gradient: 'from-[rgba(255,255,255,0.18)] to-[rgba(255,255,255,0.05)]',
+          borderColor: 'border-[rgba(255,255,255,0.35)]',
+          iconColor: 'text-[var(--accent-3)]',
+          glowColor: 'shadow-[0_15px_40px_rgba(255,255,255,0.18)]',
         };
       case 'Gold':
         return {
-          gradient: 'from-yellow-500 to-yellow-700',
-          borderColor: 'border-yellow-500',
-          iconColor: 'text-yellow-300',
-          glowColor: 'shadow-yellow-500/30',
+          gradient: 'from-[rgba(139,92,246,0.35)] to-[rgba(34,211,238,0.25)]',
+          borderColor: 'border-[var(--accent)]',
+          iconColor: 'text-[var(--accent)]',
+          glowColor: 'shadow-[0_15px_40px_rgba(139,92,246,0.28)]',
         };
     }
   };
 
   const handleOpenBox = async (box: MysteryBoxType) => {
     if (userBalance < box.cost) {
-      toast.error('Insufficient FLOG balance!');
+      toast.error('Insufficient Gold balance!');
       return;
     }
 
@@ -136,25 +136,25 @@ export default function MysteryBox({ userId, userBalance, onPurchase }: Props) {
   };
 
   return (
-    <div className="bg-gray-900 rounded-xl p-6 shadow-2xl border border-gray-800">
+    <div className="glass-panel rounded-2xl p-6 shadow-2xl border border-[var(--card-border)] text-[var(--text)]">
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-white flex items-center gap-2 mb-2">
-          <FaGift className="text-purple-400" />
+        <h2 className="text-2xl font-bold flex items-center gap-2 mb-2">
+          <FaGift className="text-[var(--accent)]" />
           Mystery Boxes
         </h2>
-        <p className="text-gray-400 text-sm">
+        <p className="text-[var(--muted)] text-sm">
           Take a chance on random loot! Higher tier boxes guarantee better rewards.
         </p>
       </div>
 
       {/* User Balance */}
-      <div className="bg-gray-800 rounded-lg p-4 mb-6 border border-gray-700">
+      <div className="rounded-xl p-4 mb-6 border border-[var(--card-border)] bg-[rgba(26,32,48,0.65)]">
         <div className="flex items-center justify-between">
-          <span className="text-gray-400">Your Balance</span>
-          <div className="flex items-center gap-2 text-yellow-400 font-bold text-lg">
+          <span className="text-[var(--muted)]">Your Balance</span>
+          <div className="flex items-center gap-2 text-[var(--accent-2)] font-bold text-lg">
             <FaCoins />
-            {userBalance.toLocaleString()} FLOG
+            {userBalance.toLocaleString()} Gold
           </div>
         </div>
       </div>
@@ -179,19 +179,19 @@ export default function MysteryBox({ userId, userBalance, onPurchase }: Props) {
             >
               {/* Lock overlay for unaffordable boxes */}
               {!canAfford && (
-                <div className="absolute inset-0 bg-gray-900/60 rounded-xl flex items-center justify-center">
-                  <FaLock className="text-4xl text-gray-500" />
+                <div className="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center">
+                  <FaLock className="text-4xl text-[var(--muted)]" />
                 </div>
               )}
 
               {/* Box icon */}
               <div className="text-center mb-4">
                 <FaGift className={`text-6xl ${config.iconColor} mx-auto mb-2`} />
-                <h3 className="text-white font-bold text-lg">{box.name}</h3>
+                <h3 className="text-[var(--text)] font-bold text-lg">{box.name}</h3>
               </div>
 
               {/* Description */}
-              <p className="text-white/80 text-sm text-center mb-4">
+              <p className="text-[var(--muted)] text-sm text-center mb-4">
                 {box.description}
               </p>
 
@@ -208,11 +208,11 @@ export default function MysteryBox({ userId, userBalance, onPurchase }: Props) {
 
               {/* Cost */}
               <div className="text-center">
-                <div className="flex items-center justify-center gap-2 text-yellow-300 font-bold text-xl">
+                <div className="flex items-center justify-center gap-2 text-[var(--accent-2)] font-bold text-xl">
                   <FaCoins />
                   {box.cost.toLocaleString()}
                 </div>
-                <div className="text-white/60 text-xs mt-1">FLOG</div>
+                <div className="text-[var(--muted)] text-xs mt-1">Gold</div>
               </div>
             </div>
           );
@@ -230,7 +230,7 @@ export default function MysteryBox({ userId, userBalance, onPurchase }: Props) {
                 } animate-pulse`}
               />
             </div>
-            <h3 className="text-white text-2xl font-bold mb-2">
+            <h3 className="text-[var(--text)] text-2xl font-bold mb-2">
               Opening {selectedBox.name}...
             </h3>
             <div className="flex items-center justify-center gap-2">
@@ -245,11 +245,11 @@ export default function MysteryBox({ userId, userBalance, onPurchase }: Props) {
       {/* Rewards Display */}
       {showRewards && rewards.length > 0 && (
         <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-900 rounded-xl p-8 max-w-2xl w-full border border-gray-700">
-            <h3 className="text-3xl font-bold text-white mb-6 text-center flex items-center justify-center gap-3">
-              <FaStar className="text-yellow-400" />
+          <div className="glass-panel rounded-2xl p-8 max-w-2xl w-full border border-[var(--card-border)]">
+            <h3 className="text-3xl font-bold text-[var(--text)] mb-6 text-center flex items-center justify-center gap-3">
+              <FaStar className="text-[var(--accent-2)]" />
               Your Rewards!
-              <FaStar className="text-yellow-400" />
+              <FaStar className="text-[var(--accent-2)]" />
             </h3>
 
             {/* Rewards Grid */}
@@ -263,15 +263,15 @@ export default function MysteryBox({ userId, userBalance, onPurchase }: Props) {
                 >
                   <div className="p-4">
                     <div className="flex items-start justify-between mb-2">
-                      <h4 className="text-white font-semibold">{reward.itemName}</h4>
+                      <h4 className="text-[var(--text)] font-semibold">{reward.itemName}</h4>
                       <RarityBadge rarity={reward.rarity} size="xs" />
                     </div>
                     <div className="flex gap-3 text-sm">
-                      <div className="flex items-center gap-1 text-yellow-400">
+                      <div className="flex items-center gap-1 text-[var(--accent-2)]">
                         <FaCoins />
                         <span>{reward.flogValue.toLocaleString()}</span>
                       </div>
-                      <div className="flex items-center gap-1 text-purple-400">
+                      <div className="flex items-center gap-1 text-[var(--accent)]">
                         <FaStar />
                         <span>+{reward.bonusXP} XP</span>
                       </div>
@@ -282,15 +282,15 @@ export default function MysteryBox({ userId, userBalance, onPurchase }: Props) {
             </div>
 
             {/* Total Value */}
-            <div className="bg-gray-800 rounded-lg p-4 mb-4 border border-gray-700">
+            <div className="rounded-lg p-4 mb-4 border border-[var(--card-border)] bg-[rgba(26,32,48,0.65)]">
               <div className="text-center">
-                <div className="text-gray-400 text-sm mb-1">Total Value</div>
+                <div className="text-[var(--muted)] text-sm mb-1">Total Value</div>
                 <div className="flex items-center justify-center gap-4">
-                  <div className="flex items-center gap-2 text-yellow-400 font-bold text-xl">
+                  <div className="flex items-center gap-2 text-[var(--accent-2)] font-bold text-xl">
                     <FaCoins />
                     {rewards.reduce((sum, r) => sum + r.flogValue, 0).toLocaleString()}
                   </div>
-                  <div className="flex items-center gap-2 text-purple-400 font-bold text-xl">
+                  <div className="flex items-center gap-2 text-[var(--accent)] font-bold text-xl">
                     <FaStar />
                     +{rewards.reduce((sum, r) => sum + r.bonusXP, 0)} XP
                   </div>
@@ -301,7 +301,7 @@ export default function MysteryBox({ userId, userBalance, onPurchase }: Props) {
             {/* Close Button */}
             <button
               onClick={handleCloseRewards}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-3 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all"
+              className="w-full soft-button py-3 rounded-xl justify-center"
             >
               Claim Rewards
             </button>

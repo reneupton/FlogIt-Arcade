@@ -8,6 +8,8 @@ namespace BiddingService.DTOs
         public int Experience { get; set; }
         public int NextLevelAt { get; set; }
         public int FlogBalance { get; set; }
+        public int GoldBalance => FlogBalance;
+        public int TotalHeroPower { get; set; }
         public int AuctionsCreated { get; set; }
         public int AuctionsSold { get; set; }
     public int AuctionsWon { get; set; }
@@ -19,6 +21,7 @@ namespace BiddingService.DTOs
     public DateTime? LastMysteryRewardAt { get; set; }
     public int? LastMysteryRewardXp { get; set; }
     public int? LastMysteryRewardCoins { get; set; }
+    public List<OwnedHeroDto> OwnedHeroes { get; set; } = new();
 }
 
     public class HeldBidDto

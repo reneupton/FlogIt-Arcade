@@ -2,7 +2,7 @@ import { Auction, AuctionFinished } from '@/types'
 import Link from 'next/link'
 import React from 'react'
 import Image from 'next/image'
-import { formatFlog } from '../lib/numberWithComma'
+import { formatGold } from '../lib/numberWithComma'
 
 type Props = {
     finishedAuction: AuctionFinished
@@ -25,7 +25,7 @@ export default function AuctionFinishedToast({finishedAuction, auction} : Props)
                 <span className='font-semibold text-slate-800'>Auction finished: {auction.title} ({auction.brand})</span>
                 {finishedAuction.itemSold && finishedAuction.amount ? (
                     <p className='text-sm text-slate-600'>
-                      Congrats {finishedAuction.winner}! Victory price {formatFlog(finishedAuction.amount)}
+                      Congrats {finishedAuction.winner}! Victory price {formatGold(finishedAuction.amount)}
                     </p>
                 ) : (
                     <p className='text-sm text-slate-600'>This item did not sell</p>

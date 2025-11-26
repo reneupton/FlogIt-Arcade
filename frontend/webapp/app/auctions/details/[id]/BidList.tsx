@@ -1,16 +1,17 @@
 "use client";
 
 import { getBidsForAuction } from "@/app/actions/auctionActions";
-import Heading from "@/app/components/Heading";
 import { useBidStore } from "@/hooks/useBidStore";
 import { Auction, Bid } from "@/types";
 import { User } from "next-auth";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import BidItem from "./BidItem";
-import { formatFlog } from "@/app/lib/numberWithComma";
+import { formatGold, numberWithCommas } from "@/app/lib/numberWithComma";
 import EmptyFilter from "@/app/components/EmptyFilter";
 import BidForm from "./BidForm";
+import Image from "next/image";
+import goldIcon from "@/public/gold2.png";
 
 type Props = {
   user: User | null;
@@ -61,8 +62,13 @@ export default function BidList({ user, auction }: Props) {
   return (
     <div className="glass-panel ios-shadow rounded-2xl h-full flex flex-col">
       <div className="py-3 px-4 bg-transparent border-b border-white/60">
-        <div className="flex items-center justify-between">
-          <Heading title={`Current high bid is ${formatFlog(highBid)}`} />
+        <div className="flex items-center justify-between gap-2 text-[var(--text)]">
+          <div className="flex items-center gap-2 text-sm md:text-base font-semibold">
+            <Image src={goldIcon} alt="gold" width={18} height={18} className="object-contain" />
+            <span>Current high bid</span>
+            <span className="text-[var(--accent)]">{numberWithCommas(highBid)}</span>
+          </div>
+          <div className="text-xs text-[var(--muted)]">{formatGold(highBid)}</div>
         </div>
       </div>
 

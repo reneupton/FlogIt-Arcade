@@ -199,9 +199,9 @@ export default function ActivityFeed({
                       </span>
                     )}
                     {activity.metadata.amount !== undefined && (
-                      <span className="text-xs bg-yellow-900/30 text-yellow-400 px-2 py-1 rounded font-semibold">
-                        {activity.metadata.amount.toLocaleString()} FLOG
-                      </span>
+                        <span className="text-xs bg-[rgba(245,158,11,0.25)] text-[var(--accent-2)] px-2 py-1 rounded font-semibold">
+                          {activity.metadata.amount.toLocaleString()} Gold
+                        </span>
                     )}
                     {activity.metadata.level !== undefined && (
                       <span className="text-xs bg-purple-900/30 text-purple-400 px-2 py-1 rounded font-semibold">

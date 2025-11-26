@@ -26,7 +26,7 @@ export const gamificationService = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ amount }),
     });
-    if (!res.ok) throw new Error('Failed to stake FLOG');
+    if (!res.ok) throw new Error('Failed to stake Gold');
     return res.json();
   },
 
@@ -36,7 +36,7 @@ export const gamificationService = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ amount }),
     });
-    if (!res.ok) throw new Error('Failed to unstake FLOG');
+    if (!res.ok) throw new Error('Failed to unstake Gold');
     return res.json();
   },
 

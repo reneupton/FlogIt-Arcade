@@ -1,4 +1,4 @@
-﻿using AuctionService.Entities;
+using AuctionService.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace AuctionService.Data;
@@ -26,123 +26,123 @@ public class DbInitialiser
         {
             new Item
             {
-                Title = "Nebula Pro Mechanical Keyboard",
-                Brand = "Lumos",
-                Category = "Keyboard",
-                Variant = "75% RGB Tri-mode",
-                Condition = "New",
-                Colorway = "White Ice",
-                ReleaseYear = 2024,
-                Specs = "Gateron Oil King | PBT caps | Hot-swap",
-                ImageUrl = "https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?auto=format&fit=crop&w=1200&q=80"
+                Title = "Veyla the Shadow Lich",
+                Brand = "Necromancer",
+                Category = "Legendary",
+                Variant = "INT 95 | STR 42 | VIT 68 | AGI 54",
+                Condition = "Hero",
+                Colorway = "Arcane",
+                ReleaseYear = 2025,
+                Specs = "Master of shadow flames and soul drain.",
+                ImageUrl = "/pets/craftpix-net-935193-free-chibi-necromancer-of-the-shadow-character-sprites/necromancer_of_the_shadow_1/card/frame_0.png"
             },
             new Item
             {
-                Title = "Aurora 27\" QHD Gaming Monitor",
-                Brand = "Pulseview",
-                Category = "Monitor",
-                Variant = "170Hz Fast-IPS",
-                Condition = "Open-Box",
-                Colorway = "Midnight",
-                ReleaseYear = 2023,
-                Specs = "2560x1440 | 170Hz | 1ms | HDR400",
-                ImageUrl = "https://images.unsplash.com/photo-1580894732444-8ecded7900cd?auto=format&fit=crop&w=1200&q=80"
+                Title = "Elyra Nocturne",
+                Brand = "Oracle",
+                Category = "Epic",
+                Variant = "INT 88 | STR 34 | VIT 60 | AGI 58",
+                Condition = "Hero",
+                Colorway = "Umbral",
+                ReleaseYear = 2025,
+                Specs = "Seer of eclipses, whispers prophecies.",
+                ImageUrl = "/pets/craftpix-net-919731-free-chibi-dark-oracle-character-sprites/dark_oracle_1/card/frame_0.png"
             },
             new Item
             {
-                Title = "Atlas X Wireless Gaming Mouse",
-                Brand = "Glacier",
-                Category = "Mouse",
-                Variant = "58g / 4K Hz",
-                Condition = "New",
-                Colorway = "Lunar Grey",
-                ReleaseYear = 2024,
-                Specs = "PixArt 3395 | 4K dongle | 58g",
-                ImageUrl = "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=1200&q=80"
+                Title = "Morr Wispblade",
+                Brand = "Reaper",
+                Category = "Rare",
+                Variant = "STR 68 | INT 64 | VIT 58 | AGI 72",
+                Condition = "Hero",
+                Colorway = "Wraith",
+                ReleaseYear = 2025,
+                Specs = "Edge of dusk; silent executioner.",
+                ImageUrl = "/pets/craftpix-904589-free-reaper-man-chibi-2d-game-sprites/reaper_man_1/card/frame_1.png"
             },
             new Item
             {
-                Title = "Nova Pro Wireless Headset",
-                Brand = "Velar",
-                Category = "Headset",
-                Variant = "ANC + Low-latency",
-                Condition = "Used",
-                Colorway = "Onyx",
-                ReleaseYear = 2022,
-                Specs = "Dual wireless | ANC | Swap batteries",
-                ImageUrl = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=80"
+                Title = "Sigrun Dawnbreak",
+                Brand = "Valkyrie",
+                Category = "Legendary",
+                Variant = "STR 90 | VIT 82 | AGI 70 | INT 48",
+                Condition = "Hero",
+                Colorway = "Sunsteel",
+                ReleaseYear = 2025,
+                Specs = "Skyrider who guards fallen champions.",
+                ImageUrl = "/pets/craftpix-net-469596-free-chibi-valkyrie-character-sprites/valkyrie_1/card/frame_3.png"
             },
             new Item
             {
-                Title = "Helix RTX 4080 Super GPU",
-                Brand = "Nvidia",
-                Category = "GPU",
-                Variant = "16GB GDDR6X",
-                Condition = "New",
-                Colorway = "Founders Black",
-                ReleaseYear = 2024,
-                Specs = "Overclocked | DLSS 3.5 | 850W rec PSU",
-                ImageUrl = "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80"
+                Title = "Caelys Ember-Crusader",
+                Brand = "Warrior",
+                Category = "Rare",
+                Variant = "STR 82 | VIT 78 | AGI 52 | INT 32",
+                Condition = "Hero",
+                Colorway = "Emberbone",
+                ReleaseYear = 2025,
+                Specs = "Frontline bastion wielding holy fire.",
+                ImageUrl = "/pets/craftpix-net-166787-free-chibi-skeleton-crusader-character-sprites/skeleton_crusader_1/card/frame_0.png"
             },
             new Item
             {
-                Title = "Sentinel XL Gaming Chair",
-                Brand = "Aether",
-                Category = "Chair",
-                Variant = "Fabric / 4D Armrests",
-                Condition = "New",
-                Colorway = "Mist Grey",
-                ReleaseYear = 2023,
-                Specs = "Aluminum base | 4D arms | Memory foam",
-                ImageUrl = "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=1200&q=80"
+                Title = "Torhild Embercore",
+                Brand = "Guardian",
+                Category = "Epic",
+                Variant = "STR 88 | VIT 92 | AGI 28 | INT 28",
+                Condition = "Hero",
+                Colorway = "Magma",
+                ReleaseYear = 2025,
+                Specs = "Living bulwark of stone and flame.",
+                ImageUrl = "/pets/craftpix-891123-free-golems-chibi-2d-game-sprites/golem_1/card/frame_1.png"
             },
             new Item
             {
-                Title = "Pulse 34\" Ultrawide Monitor",
-                Brand = "Pulseview",
-                Category = "Monitor",
-                Variant = "144Hz UWQHD",
-                Condition = "Open-Box",
-                Colorway = "Shadow Black",
-                ReleaseYear = 2023,
-                Specs = "3440x1440 | 144Hz | 1ms | HDR10",
-                ImageUrl = "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=1200&q=80"
+                Title = "Frostech Ward",
+                Brand = "Guardian",
+                Category = "Rare",
+                Variant = "STR 74 | VIT 86 | AGI 32 | INT 35",
+                Condition = "Hero",
+                Colorway = "Frost",
+                ReleaseYear = 2025,
+                Specs = "Icebound sentinel, anchors the line.",
+                ImageUrl = "/pets/craftpix-891123-free-golems-chibi-2d-game-sprites/golem_2/card/frame_2.png"
             },
             new Item
             {
-                Title = "Forge Mini ITX Gaming PC",
-                Brand = "Custom",
-                Category = "PC",
-                Variant = "Ryzen 7 / RTX 4070",
-                Condition = "New",
-                Colorway = "Frost White",
-                ReleaseYear = 2024,
-                Specs = "Ryzen 7 7800X3D | RTX 4070 | 32GB DDR5",
-                ImageUrl = "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=1200&q=80"
+                Title = "Grum Ironhorn",
+                Brand = "Berserker",
+                Category = "Epic",
+                Variant = "STR 96 | VIT 88 | AGI 44 | INT 18",
+                Condition = "Hero",
+                Colorway = "Bronze",
+                ReleaseYear = 2025,
+                Specs = "Stampeding minotaur, unstoppable charge.",
+                ImageUrl = "/pets/craftpix-net-534656-free-minotaur-chibi-character-sprites/minotaur_1/card/frame_1.png"
             },
             new Item
             {
-                Title = "Stride XL Gaming Desk Mat",
-                Brand = "Glacier",
-                Category = "Accessories",
-                Variant = "Stealth RGB",
-                Condition = "New",
-                Colorway = "Onyx",
-                ReleaseYear = 2024,
-                Specs = "XXL size | RGB edge | Spill resistant",
-                ImageUrl = "https://images.unsplash.com/photo-1519337265831-281ec6cc8514?auto=format&fit=crop&w=1200&q=80"
+                Title = "Astrael Fallen",
+                Brand = "Reaper",
+                Category = "Legendary",
+                Variant = "STR 76 | INT 74 | VIT 72 | AGI 66",
+                Condition = "Hero",
+                Colorway = "Celestial",
+                ReleaseYear = 2025,
+                Specs = "Winged revenant with twilight scythe.",
+                ImageUrl = "/pets/craftpix-991117-free-fallen-angel-chibi-2d-game-sprites/fallen_angel_1/card/frame_0.png"
             },
             new Item
             {
-                Title = "Lumen Studio Streaming Kit",
-                Brand = "Lumos",
-                Category = "Streaming",
-                Variant = "Dual Light + Mic",
-                Condition = "New",
-                Colorway = "Black",
-                ReleaseYear = 2024,
-                Specs = "Key lights | arm mic | desk boom",
-                ImageUrl = "https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1200&q=80"
+                Title = "Dresh Wildarrow",
+                Brand = "Ranger",
+                Category = "Common",
+                Variant = "STR 58 | AGI 68 | VIT 52 | INT 24",
+                Condition = "Hero",
+                Colorway = "Verdant",
+                ReleaseYear = 2025,
+                Specs = "Quickdraw hunter of the wild clans.",
+                ImageUrl = "/pets/craftpix-064112-free-orc-ogre-and-goblin-chibi-2d-game-sprites/orc/card/frame_0.png"
             }
         };
 

@@ -3,7 +3,7 @@
 import { useBidStore } from "@/hooks/useBidStore";
 import { usePathname } from "next/navigation";
 import React from "react";
-import Countdown, { zeroPad } from "react-countdown";
+import Countdown from "react-countdown";
 
 type Props = {
   auctionEnd: string;
@@ -23,22 +23,29 @@ const renderer = ({
   completed: boolean;
 }) => {
   const statusClass = completed
-    ? "badge-neutral"
-    : days === 0 && hours < 10
+    ? "badge-neutral-soft"
+    : days === 0 && hours < 2
     ? "badge-warn"
     : "badge-positive";
+
+  let label: string;
+  if (completed) {
+    label = "Auction finished";
+  } else if (days > 0) {
+    label = `${days}d ${hours}h`;
+  } else if (hours > 0) {
+    label = `${hours}h ${minutes}m`;
+  } else if (minutes > 0) {
+    label = `${minutes}m ${seconds.toString().padStart(2, "0")}s`;
+  } else {
+    label = `${seconds}s`;
+  }
 
   return (
     <div
       className={`badge ${statusClass} shadow-lg`}
     >
-      {completed ? (
-        <span> Auction finished</span>
-      ) : (
-        <span suppressHydrationWarning>
-          {zeroPad(days)}:{zeroPad(hours)}:{zeroPad(minutes)}:{zeroPad(seconds)}
-        </span>
-      )}
+      <span suppressHydrationWarning>{label}</span>
     </div>
   );
 };

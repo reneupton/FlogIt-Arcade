@@ -279,7 +279,7 @@ export default function AuctionForm({ auction }: Props) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <Input
-              label="Reserve Price in FLOG (enter 0 if no reserve)"
+            label="Reserve Price in Gold (enter 0 if no reserve)"
               name="reservePrice"
               control={control}
               type="number"

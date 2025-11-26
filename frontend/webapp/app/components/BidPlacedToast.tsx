@@ -2,7 +2,7 @@ import { Auction, Bid } from '@/types'
 import Link from 'next/link'
 import React from 'react'
 import Image from 'next/image'
-import { formatFlog } from '../lib/numberWithComma'
+import { formatGold } from '../lib/numberWithComma'
 
 type Props = {
     bid: Bid
@@ -21,7 +21,7 @@ export default function AuctionCreatedToast({bid, auction} : Props) {
                 className='rounded-xl w-auto h-auto shadow'
             />
 
-            <span className='text-sm text-slate-700'>{formatFlog(bid.amount)} bid placed on {auction.title} ({auction.brand})</span>
+            <span className='text-sm text-slate-700'>{formatGold(bid.amount)} bid placed on {auction.title} ({auction.brand})</span>
         </div>
         </Link>
   )

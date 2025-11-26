@@ -8,8 +8,13 @@ import GamificationBootstrap from './providers/GamificationBootstrap'
 
 
 export const metadata: Metadata = {
-  title: 'FLOG IT - TECH',
-  description: 'Arcade auctions for gaming gear, powered by FLOG coins.',
+  title: 'Hero Exchange',
+  description: 'RPG hero marketplace for rare adventurers, powered by gold.',
+  icons: {
+    icon: '/icon.png',
+    shortcut: '/icon.png',
+    apple: '/icon.png',
+  },
 }
 
 export default async function RootLayout({
@@ -20,9 +25,9 @@ export default async function RootLayout({
   const user = await getCurrentUser();
   return (
     <html lang="en">
-      <body className="min-h-screen bg-transparent text-slate-900">
+      <body className="min-h-screen bg-transparent text-[var(--text)]">
         <div className="fixed inset-0 -z-10">
-          <div className="h-full w-full bg-[radial-gradient(circle_at_20%_20%,#dbe8ff_0,transparent_28%),radial-gradient(circle_at_80%_0,#efe5ff_0,transparent_26%),linear-gradient(180deg,#f5f7fb,#eef2fb)]" />
+          <div className="h-full w-full bg-[radial-gradient(circle_at_20%_20%,rgba(139,92,246,0.12)_0,transparent_28%),radial-gradient(circle_at_80%_0,rgba(34,211,238,0.12)_0,transparent_26%),linear-gradient(180deg,var(--bg),var(--bg-2))]" />
         </div>
         <ToasterProvider />
         <Navbar></Navbar>

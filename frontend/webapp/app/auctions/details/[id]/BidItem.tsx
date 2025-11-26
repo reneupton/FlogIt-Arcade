@@ -1,4 +1,4 @@
-import { formatFlog } from '@/app/lib/numberWithComma';
+import { formatGold } from '@/app/lib/numberWithComma';
 import { Bid } from '@/types'
 import { format } from 'date-fns';
 import React from 'react'
@@ -44,7 +44,7 @@ export default function BidItem({bid} : Props) {
             <span className='text-gray-700 text-sm'>Time: {format(new Date(bid.bidTime), "dd MMM yyyy h:mm a")}</span>
         </div>
         <div className='flex flex-col text-right'>
-            <div className='text-xl font-semibold'>{formatFlog(bid.amount)}</div>
+            <div className='text-xl font-semibold'>{formatGold(bid.amount)}</div>
             <div className='flex flex-row items-center'>
                 <span>{getBidInfo().text}</span>
             </div>

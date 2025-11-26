@@ -4,12 +4,16 @@ import {useEffect} from "react";
 import {Auction} from "@/types";
 import {Table} from "flowbite-react";
 import { useRouter } from "next/navigation";
-import { formatFlog } from "@/app/lib/numberWithComma";
+import { formatGold } from "@/app/lib/numberWithComma";
+import { CharacterDefinition } from "@/app/data/characterCatalog";
+import Image from "next/image";
+import goldIcon from "@/public/gold2.png";
 
 type Props = {
-    auction: Auction
+    auction: Auction;
+    character?: CharacterDefinition;
 }
-export default function DetailedSpecs({auction}: Props) {
+export default function DetailedSpecs({auction, character}: Props) {
     const router = useRouter();
     useEffect(() => {
         if (!auction || !auction.id) {
@@ -31,51 +35,39 @@ export default function DetailedSpecs({auction}: Props) {
                         </Table.Cell>
                     </Table.Row>
                     <Table.Row className="bg-transparent">
-                    <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
-                            Brand
+                        <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
+                            Discipline
                         </Table.Cell>
                         <Table.Cell>
-                            {auction.brand}
+                            {character?.discipline ?? auction.category}
                         </Table.Cell>
                     </Table.Row>
                     <Table.Row className="bg-transparent">
                         <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
-                            Category
+                            Rarity
                         </Table.Cell>
                         <Table.Cell>
-                            {auction.category}
+                            {character?.rarity ?? 'Unknown'}
                         </Table.Cell>
                     </Table.Row>
                     <Table.Row className="bg-transparent">
                         <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
-                            Variant
+                            <div className="flex items-center gap-2">
+                                <Image src={goldIcon} alt="gold" width={16} height={16} className="object-contain" />
+                                Value
+                            </div>
                         </Table.Cell>
-                        <Table.Cell>
-                            {auction.variant}
-                        </Table.Cell>
-                    </Table.Row>
-                    <Table.Row className="bg-transparent">
-                        <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
-                            Condition
-                        </Table.Cell>
-                        <Table.Cell>
-                            {auction.condition}
+                        <Table.Cell className="flex items-center gap-2">
+                            <Image src={goldIcon} alt="gold" width={16} height={16} className="object-contain" />
+                            {character ? formatGold(character.gold) : '-'}
                         </Table.Cell>
                     </Table.Row>
                     <Table.Row className="bg-transparent">
                         <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
-                            Colorway
+                            Reserve
                         </Table.Cell>
                         <Table.Cell>
-                            {auction.colorway}
-                        </Table.Cell>
-                    </Table.Row>
-                    <Table.Row className="bg-transparent">
-                        <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
-                            Release year
-                        </Table.Cell>
-                        <Table.Cell>
-                            {auction.releaseYear ?? '—'}
+                            {auction.reservePrice > 0 ? formatGold(auction.reservePrice) : 'No reserve'}
                         </Table.Cell>
                     </Table.Row>
                     <Table.Row className="bg-transparent">
@@ -86,24 +78,21 @@ export default function DetailedSpecs({auction}: Props) {
                             {auction.specs}
                         </Table.Cell>
                     </Table.Row>
-                    <Table.Row className="bg-transparent">
+                    {character && (
+                      <Table.Row className="bg-transparent">
                         <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
-                            Has reserve price?
+                          Base Stats
                         </Table.Cell>
-                        <Table.Cell>
-                            {auction.reservePrice > 0 ? 'Yes' : 'No'}
+                        <Table.Cell className="space-x-2 text-sm text-slate-800">
+                          <span>STR {character.stats.strength}</span>
+                          <span>INT {character.stats.intellect}</span>
+                          <span>VIT {character.stats.vitality}</span>
+                          <span>AGI {character.stats.agility}</span>
                         </Table.Cell>
-                    </Table.Row>
-                    <Table.Row className="bg-transparent">
-                        <Table.Cell className="whitespace-nowrap font-semibold text-slate-900">
-                            Reserve
-                        </Table.Cell>
-                        <Table.Cell>
-                            {auction.reservePrice > 0 ? formatFlog(auction.reservePrice) : 'No reserve'}
-                        </Table.Cell>
-                    </Table.Row>
+                      </Table.Row>
+                    )}
                 </Table.Body>
             </Table>
         </div>
-    );
+    )
 }

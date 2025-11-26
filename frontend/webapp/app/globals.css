@@ -5,31 +5,32 @@
 @import "react-datepicker/dist/react-datepicker.css";
 
 :root {
-  --bg: #f5f7fb;
-  --bg-2: #eef2fb;
-  --card: rgba(255, 255, 255, 0.78);
-  --card-strong: rgba(255, 255, 255, 0.92);
-  --card-border: rgba(255, 255, 255, 0.6);
-  --text: #0f172a;
-  --muted: #475569;
-  --accent: #5b7bff;
-  --accent-2: #9f7aea;
-  --accent-3: #7dd3fc;
-  --shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+  /* RPG / arcane palette */
+  --bg: #0b1220;
+  --bg-2: #0f172a;
+  --card: rgba(26, 32, 48, 0.9);
+  --card-strong: rgba(34, 41, 62, 0.95);
+  --card-border: rgba(123, 97, 255, 0.35);
+  --text: #e8ecff;
+  --muted: #a5b4d6;
+  --accent: #8b5cf6; /* arcane violet */
+  --accent-2: #f59e0b; /* amber/gold */
+  --accent-3: #22d3ee; /* cyan glow */
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
   --radius-lg: 22px;
   --radius-sm: 14px;
 }
 
 * {
-  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  font-family: "Cinzel", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI",
     "Helvetica Neue", Arial, sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
 
 body {
-  background: radial-gradient(circle at 20% 20%, #e9f0ff 0, transparent 28%),
-    radial-gradient(circle at 80% 0, #f4e8ff 0, transparent 26%),
+  background: radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.12) 0, transparent 28%),
+    radial-gradient(circle at 80% 0, rgba(34, 211, 238, 0.12) 0, transparent 26%),
     linear-gradient(180deg, var(--bg), var(--bg-2));
   color: var(--text);
 }
@@ -41,6 +42,41 @@ body {
 @layer base {
   a {
     @apply text-inherit no-underline;
+  }
+
+  /* Map common Tailwind text utilities to theme vars */
+  .text-slate-900,
+  .text-gray-900 {
+    color: var(--text) !important;
+  }
+  .text-slate-800,
+  .text-gray-800 {
+    color: var(--text) !important;
+  }
+  .text-slate-700,
+  .text-gray-700 {
+    color: var(--muted) !important;
+  }
+  .text-slate-600,
+  .text-gray-600,
+  .text-slate-500,
+  .text-gray-500 {
+    color: var(--muted) !important;
+  }
+
+  /* Map common light backgrounds/borders to parchment tones */
+  .bg-white\/60,
+  .bg-white\/70,
+  .bg-white\/80,
+  .bg-white\/90,
+  .bg-white\/85 {
+    background-color: rgba(26, 32, 48, 0.85) !important;
+  }
+
+  .border-white\/60,
+  .border-white\/70,
+  .border-amber-100 {
+    border-color: var(--card-border) !important;
   }
 }
 
@@ -60,20 +96,35 @@ body {
     border: 1px solid var(--card-border);
     backdrop-filter: blur(14px);
     box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
   }
 
   .chip {
     @apply px-4 py-2 rounded-full text-sm transition-all duration-150 border;
-    background: rgba(255, 255, 255, 0.8);
-    border-color: rgba(255, 255, 255, 0.7);
-    color: var(--muted);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--card-border);
+    color: var(--text);
   }
 
   .chip-active {
-    background: linear-gradient(120deg, var(--accent), var(--accent-2));
+    background: linear-gradient(120deg, var(--accent), var(--accent-3));
     color: #fff;
     border-color: transparent;
-    box-shadow: 0 10px 30px rgba(91, 123, 255, 0.35);
+    box-shadow: 0 10px 30px rgba(123, 97, 255, 0.35);
+  }
+
+  .chip-cta {
+    @apply px-4 py-2 rounded-full text-sm font-semibold transition-all duration-150 border;
+    background: linear-gradient(120deg, var(--accent-2), var(--accent));
+    color: #0b1220;
+    border-color: rgba(139, 92, 246, 0.45);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  }
+
+  .chip-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
   }
 
   .pill-input {
@@ -89,51 +140,66 @@ body {
 
   .badge {
     @apply inline-flex items-center text-xs font-medium rounded-full px-3 py-1;
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
-    color: var(--text);
+    background: linear-gradient(135deg, rgba(245, 213, 139, 0.2), rgba(245, 213, 139, 0.08));
+    border: 1px solid rgba(171, 128, 67, 0.6);
+    box-shadow: 0 8px 24px rgba(67, 43, 21, 0.22);
+    color: #3b2516;
   }
 
   .badge-positive {
-    background: linear-gradient(135deg, #3ad2a0, #4ade80);
-    color: #0f172a;
+    background: linear-gradient(135deg, #22d3ee, #8b5cf6);
+    color: #0b1220;
   }
 
   .badge-warn {
-    background: linear-gradient(135deg, #f97316, #fb7185);
-    color: #0f172a;
+    background: linear-gradient(135deg, #f97316, #f59e0b);
+    color: #0b1220;
   }
 
   .badge-neutral {
-    background: linear-gradient(135deg, #cbd5e1, #e2e8f0);
-    color: #0f172a;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.06));
+    color: var(--text);
+    border-color: rgba(123, 97, 255, 0.4);
+  }
+
+  .badge-neutral-soft {
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+    color: var(--muted);
+    border-color: rgba(123, 97, 255, 0.25);
   }
 
   .soft-button {
-    @apply rounded-full px-4 py-2 font-medium transition-all duration-150;
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 font-semibold transition-all duration-150;
     background: linear-gradient(120deg, var(--accent), var(--accent-2));
-    color: #fff;
-    box-shadow: 0 10px 30px rgba(91, 123, 255, 0.35);
+    color: #0b1220;
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
   }
 
   .soft-button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 14px 34px rgba(91, 123, 255, 0.45);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
   }
 
   .soft-button-ghost {
-    @apply rounded-full px-4 py-2 font-medium transition-all duration-150;
-    background: rgba(255, 255, 255, 0.9);
-    color: var(--muted);
-    border: 1px solid rgba(255, 255, 255, 0.7);
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 font-semibold transition-all duration-150;
+    background: linear-gradient(120deg, rgba(139, 92, 246, 0.14), rgba(34, 211, 238, 0.14));
+    color: var(--text);
+    border: 1px solid var(--card-border);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.25);
+  }
+
+  .soft-button-ghost:hover {
+    transform: translateY(-1px);
+    border-color: rgba(139, 92, 246, 0.7);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.32);
   }
 
   .card-sheen {
     background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.12),
-        rgba(255, 255, 255, 0)
+        120deg,
+        rgba(245, 213, 139, 0.18),
+        rgba(245, 213, 139, 0)
       ),
       var(--card);
   }
@@ -144,22 +210,51 @@ body {
       inset 0 1px 0 rgba(255, 255, 255, 0.6);
   }
 
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  }
+
+  .scrollbar-glow {
+    background: linear-gradient(180deg, rgba(17, 24, 39, 0.4), rgba(15, 23, 42, 0.2));
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(139, 92, 246, 0.5), rgba(34, 211, 238, 0.5));
+    border-radius: 9999px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(139, 92, 246, 0.7), rgba(34, 211, 238, 0.7));
+  }
+
+
   .pagination-soft li > * {
-    @apply border text-slate-600 transition-all duration-150;
-    border-color: rgba(255, 255, 255, 0.7);
-    background: rgba(255, 255, 255, 0.7);
-    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+    @apply border transition-all duration-150 text-white font-semibold;
+    border-color: rgba(139, 92, 246, 0.45);
+    background: linear-gradient(120deg, rgba(26, 32, 48, 0.9), rgba(34, 41, 62, 0.92));
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
   }
 
   .pagination-soft [aria-current="page"] {
     background: linear-gradient(120deg, var(--accent), var(--accent-2));
-    color: #fff;
+    color: #0b1220;
     border-color: transparent;
-    box-shadow: 0 10px 24px rgba(91, 123, 255, 0.28);
+    box-shadow: 0 10px 24px rgba(139, 92, 246, 0.35);
   }
 
   .pagination-soft li > *:hover {
     transform: translateY(-1px);
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
   }
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { formatFlog } from '../lib/numberWithComma'
+import { formatGold } from '../lib/numberWithComma'
 
 type Props = {
     amount?: number
@@ -7,12 +7,12 @@ type Props = {
 }
 
 export default function CurrentBid({amount, reservePrice} : Props) {
-    const text = amount ? formatFlog(amount) : 'No bids yet';
+    const text = amount ? formatGold(amount) : 'No bids yet';
     const color = amount
       ? amount > reservePrice
         ? 'badge-positive'
         : 'badge-warn'
-      : 'badge-neutral';
+      : 'badge-neutral-soft';
 
   return (
     <div className = {`badge ${color} pointer-events-auto`}>

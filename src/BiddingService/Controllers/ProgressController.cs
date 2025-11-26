@@ -47,7 +47,7 @@ public class ProgressController : ControllerBase
 
     [Authorize]
     [HttpPost("mystery")]
-    public async Task<ActionResult<ProgressDto>> OpenMystery()
+    public async Task<ActionResult<SummonResultDto>> OpenMystery()
     {
         var username = User.Identity?.Name;
         if (string.IsNullOrWhiteSpace(username)) return Unauthorized();
